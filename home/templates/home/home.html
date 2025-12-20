@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexandra Farms | Plataforma de Gestión de Calidad</title>
+    <meta name="description" content="Plataforma integral y multilingüe para la gestión de reclamos de calidad. Optimice sus procesos y fortalezca la relación con sus clientes.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'home/css/estilos_home.css' %}">
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <a href="#" class="logo">Alexandra <span>Farms</span></a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#features" data-translate="nav_features">Características</a></li>
+                    <li><a href="#how-it-works" data-translate="nav_how">Cómo Funciona</a></li>
+                    <li><a href="#contact" data-translate="nav_contact">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="language-switcher">
+                <button data-lang="es">ES</button>
+                <button data-lang="en">EN</button>
+                <button data-lang="ru">RU</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1 data-translate="hero_title">Gestión de Calidad sin Fronteras</h1>
+                <p data-translate="hero_subtitle">La plataforma multilingüe que Alexandra Farms necesita para gestionar reclamos de forma eficiente, transparente y centralizada.</p>
+                <a href="#features" class="cta-button" data-translate="hero_cta">Descubrir Más</a>
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <div class="container">
+                <h2 data-translate="features_title">Una Solución Integral</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-globe-americas"></i>
+                        <h3 data-translate="feature1_title">100% Multilingüe</h3>
+                        <p data-translate="feature1_desc">Disponible en Español, Inglés y Ruso para atender a sus clientes en más de 30 países sin barreras de comunicación.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h3 data-translate="feature2_title">Centralización Rápida</h3>
+                        <p data-translate="feature2_desc">Capture y valide reclamos instantáneamente, eliminando la pérdida de información y acelerando la atención.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-cogs"></i>
+                        <h3 data-translate="feature3_title">Flujo Automatizado</h3>
+                        <p data-translate="feature3_desc">Distribuya inteligentemente cada incidencia al área responsable, asegurando un proceso estandarizado y ágil.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3 data-translate="feature4_title">Inteligencia de Negocio</h3>
+                        <p data-translate="feature4_desc">Identifique tendencias y áreas de mejora en su cadena de producción con datos precisos y en tiempo real.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="how-it-works-section">
+            <div class="container">
+                <h2 data-translate="how_title">Optimice su Proceso en 4 Pasos</h2>
+                <div class="steps-grid">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3 data-translate="how_step1_title">Reporte</h3>
+                        <p data-translate="how_step1_desc">El cliente reporta la incidencia de forma estructurada, adjuntando evidencia digital.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3 data-translate="how_step2_title">Validación</h3>
+                        <p data-translate="how_step2_desc">El departamento de Control de Calidad revisa y valida el reclamo de manera obligatoria.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3 data-translate="how_step3_title">Resolución</h3>
+                        <p data-translate="how_step3_desc">El sistema distribuye el caso y el equipo responsable trabaja en una solución eficiente.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3 data-translate="how_step4_title">Trazabilidad</h3>
+                        <p data-translate="how_step4_desc">La gerencia y el equipo comercial tienen visibilidad completa del estado del reclamo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonial-section">
+            <div class="container">
+                <blockquote>
+                    <i class="fas fa-quote-left"></i>
+                    <p data-translate="testimonial_text">"Esta plataforma ha transformado nuestra comunicación con clientes. La rapidez y transparencia en el manejo de incidencias han fortalecido nuestra confianza y relación con Alexandra Farms."</p>
+                    <cite data-translate="testimonial_author">- Director de Calidad, Cliente Internacional</cite>
+                </blockquote>
+            </div>
+        </section>
+
+        <section class="final-cta-section">
+            <div class="container">
+                <h2 data-translate="cta_title">¿Listo para Liderar en Calidad y Servicio?</h2>
+                <p data-translate="cta_subtitle">Implemente la herramienta que optimizará sus procesos y satisfará a sus clientes.</p>
+                <a href="#" class="cta-button" data-translate="cta_button">Acceder a la Plataforma</a>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="main-footer">
+        <div class="container">
+            <p>&copy; 2024 Alexandra Farms. <span data-translate="footer_rights">Todos los derechos reservados.</span></p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'home/js/script_home.js' %}"></script>
+</body>
+</html>
