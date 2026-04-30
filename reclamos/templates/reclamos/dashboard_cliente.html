@@ -1,0 +1,87 @@
+{% extends 'reclamos/base_panel.html' %}
+
+{% block title %}Dashboard — Alexandra Farms{% endblock %}
+
+{% block sidebar_nav %}
+    <div class="nav-section">Menú</div>
+    <a href="{% url 'dashboard_cliente' %}" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="{% url 'crear_reclamo' %}"><i class="fas fa-plus-circle"></i> Nuevo Reclamo</a>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Dashboard</h1>
+        <p>Bienvenido, {{ request.user.get_full_name }} — {{ perfil.company_name }}</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.message == 'reclamo_creado' %}
+                <div class="alert alert-success"><i class="fas fa-check-circle"></i> Su reclamo ha sido registrado exitosamente.</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-icon yellow"><i class="fas fa-clock"></i></div>
+            <div><div class="stat-card-value">{{ pendientes }}</div><div class="stat-card-label">Pendientes</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon blue"><i class="fas fa-spinner"></i></div>
+            <div><div class="stat-card-value">{{ en_proceso }}</div><div class="stat-card-label">En proceso</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon green"><i class="fas fa-check-circle"></i></div>
+            <div><div class="stat-card-value">{{ resueltos }}</div><div class="stat-card-label">Resueltos</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon rose"><i class="fas fa-file-alt"></i></div>
+            <div><div class="stat-card-value">{{ reclamos.count }}</div><div class="stat-card-label">Total reclamos</div></div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header">
+            <h2>Mis Reclamos</h2>
+            <a href="{% url 'crear_reclamo' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Nuevo</a>
+        </div>
+        {% if reclamos %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Cargamento</th>
+                    <th>Problema</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reclamos %}
+                <tr>
+                    <td><strong>{{ r.numero }}</strong></td>
+                    <td>{{ r.numero_cargamento }}</td>
+                    <td>{{ r.get_tipo_problema_display }}</td>
+                    <td>{{ r.fecha_reclamo|date:"d/m/Y" }}</td>
+                    <td>
+                        <span class="badge badge-{{ r.estado }}">
+                            <span class="badge-dot"></span>
+                            {{ r.get_estado_display }}
+                        </span>
+                    </td>
+                    <td><a href="{% url 'detalle_reclamo' r.pk %}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Ver</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding:48px 24px;text-align:center;">
+            <i class="fas fa-inbox" style="font-size:40px;color:var(--gray-300);margin-bottom:12px;display:block;"></i>
+            <p style="color:var(--gray-500);font-size:14px;">No tiene reclamos registrados.</p>
+            <a href="{% url 'crear_reclamo' %}" class="btn btn-primary" style="margin-top:16px;"><i class="fas fa-plus"></i> Crear primer reclamo</a>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

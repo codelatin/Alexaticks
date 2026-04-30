@@ -1,0 +1,454 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexandra Farms | Iniciar Sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+        :root {
+            --green-dark: #1a3c34;
+            --green-medium: #2d6a5a;
+            --green-light: #3a8f76;
+            --green-pale: #e8f5f0;
+            --rose: #c2185b;
+            --rose-light: #e91e7a;
+            --rose-pale: #fce4ec;
+            --cream: #faf8f5;
+            --white: #ffffff;
+            --gray-100: #f5f5f5;
+            --gray-200: #eeeeee;
+            --gray-300: #e0e0e0;
+            --gray-400: #bdbdbd;
+            --gray-500: #9e9e9e;
+            --gray-600: #757575;
+            --gray-700: #616161;
+            --gray-800: #424242;
+            --gray-900: #212121;
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-xl: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--cream);
+            color: var(--gray-800);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Pétalos de fondo */
+        .petals-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .petal { position: absolute; width: 20px; height: 20px; border-radius: 50% 0 50% 50%; opacity: 0; animation: petalFall linear infinite; }
+        .petal:nth-child(1) { left: 5%; width: 18px; height: 18px; background: rgba(194,24,91,0.12); animation-duration: 12s; animation-delay: 0s; }
+        .petal:nth-child(2) { left: 15%; width: 14px; height: 14px; background: rgba(233,30,122,0.08); animation-duration: 15s; animation-delay: 2s; }
+        .petal:nth-child(3) { left: 25%; width: 22px; height: 22px; background: rgba(194,24,91,0.1); animation-duration: 10s; animation-delay: 4s; }
+        .petal:nth-child(4) { left: 40%; width: 16px; height: 16px; background: rgba(233,30,122,0.06); animation-duration: 14s; animation-delay: 1s; }
+        .petal:nth-child(5) { left: 55%; width: 20px; height: 20px; background: rgba(194,24,91,0.09); animation-duration: 11s; animation-delay: 3s; }
+        .petal:nth-child(6) { left: 70%; width: 12px; height: 12px; background: rgba(233,30,122,0.1); animation-duration: 16s; animation-delay: 5s; }
+        .petal:nth-child(7) { left: 85%; width: 24px; height: 24px; background: rgba(194,24,91,0.07); animation-duration: 13s; animation-delay: 0.5s; }
+        .petal:nth-child(8) { left: 92%; width: 15px; height: 15px; background: rgba(233,30,122,0.11); animation-duration: 17s; animation-delay: 6s; }
+        @keyframes petalFall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(1); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg) scale(0.5); opacity: 0; }
+        }
+
+        /* Contenedor principal */
+        .login-container {
+            position: relative; z-index: 1;
+            display: flex; width: 1000px; max-width: 95vw; min-height: 620px;
+            background: var(--white); border-radius: var(--radius-xl);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.15); overflow: hidden;
+            animation: containerEntry 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes containerEntry {
+            from { opacity: 0; transform: translateY(30px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Lado izquierdo */
+        .login-visual {
+            flex: 1; position: relative; display: flex; flex-direction: column;
+            justify-content: flex-end; padding: 40px; overflow: hidden;
+            background: linear-gradient(180deg, rgba(26,60,52,0.1) 0%, rgba(26,60,52,0.55) 50%, rgba(26,60,52,0.88) 100%),
+                        url('https://images.unsplash.com/photo-1490750967868-88aa4f44baee?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+        }
+        .login-visual::before {
+            content: ''; position: absolute; top: -80px; right: -80px;
+            width: 250px; height: 250px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.08);
+            animation: floatCircle 8s ease-in-out infinite;
+        }
+        .login-visual::after {
+            content: ''; position: absolute; bottom: 100px; left: -40px;
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 2px solid rgba(194,24,91,0.15);
+            animation: floatCircle 10s ease-in-out infinite reverse;
+        }
+        @keyframes floatCircle { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+
+        .visual-badge {
+            position: absolute; top: 32px; left: 32px;
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
+            padding: 10px 18px; border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.18);
+            animation: badgeEntry 0.6s 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes badgeEntry { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .visual-badge .badge-icon {
+            width: 32px; height: 32px; background: var(--rose); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;
+        }
+        .visual-badge .badge-text { color: white; font-family: var(--font-heading); font-weight: 700; font-size: 14px; }
+        .visual-badge .badge-text span { color: rgba(255,255,255,0.7); font-weight: 400; }
+
+        .visual-content { position: relative; z-index: 2; animation: contentEntry 0.7s 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        @keyframes contentEntry { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .visual-content h2 { font-family: var(--font-heading); font-weight: 700; font-size: 28px; color: white; line-height: 1.3; margin-bottom: 12px; }
+        .visual-content p { color: rgba(255,255,255,0.75); font-size: 15px; line-height: 1.6; max-width: 340px; }
+        .visual-stats { display: flex; gap: 28px; margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.12); }
+        .stat-item { display: flex; flex-direction: column; gap: 2px; }
+        .stat-number { font-family: var(--font-heading); font-weight: 700; font-size: 22px; color: white; }
+        .stat-label { font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.8px; }
+
+        /* Lado derecho */
+        .login-form-side { flex: 1; display: flex; flex-direction: column; padding: 48px 44px; position: relative; }
+
+        .lang-selector { position: absolute; top: 24px; right: 28px; z-index: 10; }
+        .lang-selector select {
+            appearance: none; -webkit-appearance: none;
+            background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 50px;
+            padding: 8px 36px 8px 14px; font-family: var(--font-body); font-size: 13px; font-weight: 500;
+            color: var(--gray-700); cursor: pointer; transition: var(--transition);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 12px center;
+        }
+        .lang-selector select:hover { border-color: var(--green-light); background-color: var(--green-pale); }
+        .lang-selector select:focus { outline: none; border-color: var(--green-medium); box-shadow: 0 0 0 3px rgba(45,106,90,0.12); }
+
+        .form-header { margin-bottom: 32px; animation: formEntry 0.6s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        @keyframes formEntry { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .form-header .welcome-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--green-pale) 0%, var(--rose-pale) 100%);
+            border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; font-size: 20px; color: var(--green-dark);
+        }
+        .form-header h1 { font-family: var(--font-heading); font-weight: 700; font-size: 26px; color: var(--gray-900); margin-bottom: 6px; }
+        .form-header p { font-size: 14px; color: var(--gray-500); line-height: 1.5; }
+
+        .form-body { flex: 1; display: flex; flex-direction: column; gap: 20px; animation: formEntry 0.6s 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+        .input-group { position: relative; }
+        .input-group > label { display: block; font-family: var(--font-heading); font-weight: 600; font-size: 13px; color: var(--gray-700); margin-bottom: 7px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper .input-icon { position: absolute; left: 14px; color: var(--gray-400); font-size: 15px; transition: var(--transition); pointer-events: none; }
+        .input-wrapper input {
+            width: 100%; padding: 13px 14px 13px 42px; font-family: var(--font-body); font-size: 14px;
+            color: var(--gray-900); background: var(--gray-100); border: 1.5px solid var(--gray-200);
+            border-radius: var(--radius-sm); transition: var(--transition);
+        }
+        .input-wrapper input::placeholder { color: var(--gray-400); }
+        .input-wrapper input:hover { border-color: var(--gray-300); background: var(--white); }
+        .input-wrapper input:focus { outline: none; border-color: var(--green-medium); background: var(--white); box-shadow: 0 0 0 3px rgba(45,106,90,0.1); }
+        .input-wrapper:focus-within .input-icon { color: var(--green-medium); }
+
+        .toggle-password {
+            position: absolute; right: 14px; background: none; border: none;
+            color: var(--gray-400); cursor: pointer; font-size: 15px; padding: 4px; transition: var(--transition);
+        }
+        .toggle-password:hover { color: var(--gray-600); }
+
+        .form-options { display: flex; align-items: center; justify-content: space-between; }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .checkbox-group input[type="checkbox"] { display: none; }
+        .custom-checkbox {
+            width: 18px; height: 18px; border: 1.5px solid var(--gray-300); border-radius: 4px;
+            display: flex; align-items: center; justify-content: center; transition: var(--transition); flex-shrink: 0;
+        }
+        .custom-checkbox i { font-size: 10px; color: white; opacity: 0; transform: scale(0); transition: var(--transition); }
+        .checkbox-group input[type="checkbox"]:checked + .custom-checkbox { background: var(--green-dark); border-color: var(--green-dark); }
+        .checkbox-group input[type="checkbox"]:checked + .custom-checkbox i { opacity: 1; transform: scale(1); }
+        .checkbox-group .checkbox-label { font-size: 13px; color: var(--gray-600); user-select: none; }
+        .forgot-link { font-size: 13px; color: var(--rose); text-decoration: none; font-weight: 500; transition: var(--transition); }
+        .forgot-link:hover { color: var(--rose-light); text-decoration: underline; }
+
+        .btn-login {
+            width: 100%; padding: 14px 24px; font-family: var(--font-heading); font-weight: 700; font-size: 15px;
+            color: var(--white); background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-medium) 100%);
+            border: none; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+            position: relative; overflow: hidden; letter-spacing: 0.3px;
+        }
+        .btn-login::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, var(--green-medium) 0%, var(--green-light) 100%);
+            opacity: 0; transition: var(--transition);
+        }
+        .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(26,60,52,0.3); }
+        .btn-login:hover::before { opacity: 1; }
+        .btn-login:active { transform: translateY(0); }
+        .btn-login span { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-login .btn-arrow { transition: transform 0.3s ease; }
+        .btn-login:hover .btn-arrow { transform: translateX(3px); }
+
+        .form-footer { text-align: center; animation: formEntry 0.6s 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        .form-footer p { font-size: 13px; color: var(--gray-500); }
+        .form-footer a { color: var(--green-dark); text-decoration: none; font-weight: 600; transition: var(--transition); }
+        .form-footer a:hover { color: var(--green-medium); text-decoration: underline; }
+
+        /* Errores de Django */
+        .alert-error {
+            background: #fff5f5; border: 1px solid #fed7d7; color: #c53030;
+            padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px;
+            display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+            animation: shakeError 0.4s ease;
+        }
+        @keyframes shakeError { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+        .alert-error i { font-size: 16px; flex-shrink: 0; }
+
+        .input-error { border-color: #e53e3e !important; background: #fff5f5 !important; }
+        .input-error:focus { box-shadow: 0 0 0 3px rgba(229,62,62,0.1) !important; }
+        .icon-error { color: #e53e3e !important; }
+
+        .form-divider {
+            display: flex; align-items: center; gap: 14px; color: var(--gray-400);
+            font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px;
+        }
+        .form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            body { padding: 16px; overflow-y: auto; }
+            .login-container { flex-direction: column; min-height: auto; max-height: none; max-width: 440px; }
+            .login-visual { min-height: 220px; padding: 28px; }
+            .visual-content h2 { font-size: 22px; }
+            .login-form-side { padding: 32px 28px 28px; }
+            .form-header h1 { font-size: 22px; }
+        }
+        @media (max-width: 400px) {
+            .login-visual { min-height: 180px; padding: 20px; }
+            .login-form-side { padding: 24px 20px 24px; }
+            .form-options { flex-direction: column; gap: 12px; align-items: flex-start; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+        *:focus-visible { outline: 2px solid var(--green-medium); outline-offset: 2px; }
+        input:focus-visible { outline: none; }
+    </style>
+</head>
+<body>
+
+    <div class="petals-bg" aria-hidden="true">
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+    </div>
+
+    <div class="login-container">
+
+        <aside class="login-visual" aria-hidden="true">
+            <div class="visual-badge">
+                <div class="badge-icon"><i class="fas fa-seedling"></i></div>
+                <div class="badge-text">Alexandra <span>Farms</span></div>
+            </div>
+            <div class="visual-content">
+                <h2 data-translate="visual_title">Calidad que cruza fronteras</h2>
+                <p data-translate="visual_desc">Gestione reclamos, trace incidencias y fortalezca la confianza con cada cliente internacional.</p>
+                <div class="visual-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">30+</span>
+                        <span class="stat-label" data-translate="stat_countries">Países</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5K</span>
+                        <span class="stat-label" data-translate="stat_claims">Reclamos gestionados</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label" data-translate="stat_satisfaction">Satisfacción</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="login-form-side">
+            <div class="lang-selector">
+                <select id="langSelect" aria-label="Seleccionar idioma">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                    <option value="ru">Русский</option>
+                </select>
+            </div>
+
+            <div class="form-header">
+                <div class="welcome-icon"><i class="fas fa-lock"></i></div>
+                <h1 data-translate="login_title">Iniciar Sesión</h1>
+                <p data-translate="login_subtitle">Ingrese sus credenciales para acceder a la plataforma de gestión de calidad.</p>
+            </div>
+
+            <!-- Mensajes de error de Django -->
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.message == 'credenciales_invalidas' %}
+                        <div class="alert-error">
+                            <i class="fas fa-times-circle"></i>
+                            <span data-translate="toast_invalid">Credenciales inválidas. Verifique su usuario y contraseña.</span>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <form class="form-body" method="POST" action="{% url 'login' %}" novalidate autocomplete="on">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <label for="id_username" data-translate="label_user">Usuario o correo electrónico</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon{% if messages %} icon-error{% endif %}"></i>
+                        <input type="text" id="id_username" name="username" autocomplete="username"
+                               placeholder="" data-translate-placeholder="placeholder_user"
+                               value="{{ form.username.value|default:'' }}"
+                               {% if messages %}class="login-input input-error"{% endif %}>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="id_password" data-translate="label_password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-key input-icon{% if messages %} icon-error{% endif %}"></i>
+                        <input type="password" id="id_password" name="password" autocomplete="current-password"
+                               placeholder="" data-translate-placeholder="placeholder_password"
+                               {% if messages %}class="login-input input-error"{% endif %}>
+                        <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-group">
+                        <input type="checkbox" name="remember">
+                        <div class="custom-checkbox"><i class="fas fa-check"></i></div>
+                        <span class="checkbox-label" data-translate="label_remember">Recordarme</span>
+                    </label>
+                    <a href="#" class="forgot-link" data-translate="link_forgot">¿Olvidó su contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn-login" id="btnLogin">
+                    <span>
+                        <span data-translate="btn_login">Iniciar Sesión</span>
+                        <i class="fas fa-arrow-right btn-arrow"></i>
+                    </span>
+                </button>
+
+                <div class="form-divider" data-translate="divider_text">o solicite acceso</div>
+            </form>
+
+            <div class="form-footer">
+                <p>
+                    <span data-translate="footer_no_account">¿No tiene una cuenta?</span>
+                    <a href="#" data-translate="footer_request">Solicitar acceso</a>
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const translations = {
+            es: {
+                visual_title: "Calidad que cruza fronteras",
+                visual_desc: "Gestione reclamos, trace incidencias y fortalezca la confianza con cada cliente internacional.",
+                stat_countries: "Países", stat_claims: "Reclamos gestionados", stat_satisfaction: "Satisfacción",
+                login_title: "Iniciar Sesión",
+                login_subtitle: "Ingrese sus credenciales para acceder a la plataforma de gestión de calidad.",
+                label_user: "Usuario o correo electrónico", placeholder_user: "ej: jperez@alexandrafarms.com",
+                label_password: "Contraseña", placeholder_password: "Ingrese su contraseña",
+                label_remember: "Recordarme", link_forgot: "¿Olvidó su contraseña?",
+                btn_login: "Iniciar Sesión", divider_text: "o solicite acceso",
+                footer_no_account: "¿No tiene una cuenta?", footer_request: "Solicitar acceso",
+                toast_invalid: "Credenciales inválidas. Verifique su usuario y contraseña."
+            },
+            en: {
+                visual_title: "Quality that crosses borders",
+                visual_desc: "Manage claims, track incidents, and strengthen trust with every international client.",
+                stat_countries: "Countries", stat_claims: "Claims managed", stat_satisfaction: "Satisfaction",
+                login_title: "Sign In",
+                login_subtitle: "Enter your credentials to access the quality management platform.",
+                label_user: "Username or email", placeholder_user: "e.g. jperez@alexandrafarms.com",
+                label_password: "Password", placeholder_password: "Enter your password",
+                label_remember: "Remember me", link_forgot: "Forgot your password?",
+                btn_login: "Sign In", divider_text: "or request access",
+                footer_no_account: "Don't have an account?", footer_request: "Request access",
+                toast_invalid: "Invalid credentials. Please verify your username and password."
+            },
+            ru: {
+                visual_title: "Качество без границ",
+                visual_desc: "Управляйте претензиями, отслеживайте инциденты и укрепляйте доверие каждого международного клиента.",
+                stat_countries: "Стран", stat_claims: "Претензий обработано", stat_satisfaction: "Удовлетворённость",
+                login_title: "Войти в систему",
+                login_subtitle: "Введите свои учётные данные для доступа к платформе управления качеством.",
+                label_user: "Имя пользователя или email", placeholder_user: "напр. jperez@alexandrafarms.com",
+                label_password: "Пароль", placeholder_password: "Введите ваш пароль",
+                label_remember: "Запомнить меня", link_forgot: "Забыли пароль?",
+                btn_login: "Войти", divider_text: "или запросите доступ",
+                footer_no_account: "Нет учётной записи?", footer_request: "Запросить доступ",
+                toast_invalid: "Неверные учётные данные. Проверьте имя пользователя и пароль."
+            }
+        };
+
+        const langSelect = document.getElementById('langSelect');
+        const textEls = document.querySelectorAll('[data-translate]');
+        const placeholderEls = document.querySelectorAll('[data-translate-placeholder]');
+
+        const setLanguage = (lang) => {
+            if (!translations[lang]) return;
+            document.documentElement.lang = lang;
+            langSelect.value = lang;
+            textEls.forEach(el => {
+                const key = el.dataset.translate;
+                if (translations[lang][key]) el.textContent = translations[lang][key];
+            });
+            placeholderEls.forEach(el => {
+                const key = el.dataset.translatePlaceholder;
+                if (translations[lang][key]) el.placeholder = translations[lang][key];
+            });
+            localStorage.setItem('selectedLanguage', lang);
+        };
+
+        langSelect.addEventListener('change', () => setLanguage(langSelect.value));
+
+        const saved = localStorage.getItem('selectedLanguage');
+        const browser = navigator.language.split('-')[0];
+        setLanguage(translations[saved] ? saved : (translations[browser] ? browser : 'es'));
+
+        // Toggle contraseña
+        const toggleBtn = document.getElementById('togglePassword');
+        const pwInput = document.getElementById('id_password');
+        toggleBtn.addEventListener('click', () => {
+            const show = pwInput.type === 'password';
+            pwInput.type = show ? 'text' : 'password';
+            toggleBtn.querySelector('i').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+        });
+    });
+    </script>
+</body>
+</html>

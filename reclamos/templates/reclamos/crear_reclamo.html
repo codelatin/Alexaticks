@@ -1,0 +1,75 @@
+{% extends 'reclamos/base_panel.html' %}
+
+{% block title %}Nuevo Reclamo — Alexandra Farms{% endblock %}
+
+{% block sidebar_nav %}
+    <div class="nav-section">Menú</div>
+    <a href="{% url 'dashboard_cliente' %}"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="{% url 'crear_reclamo' %}" class="active"><i class="fas fa-plus-circle"></i> Nuevo Reclamo</a>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Nuevo Reclamo</h1>
+        <p>Registre una incidencia sobre un cargamento de rosas.</p>
+    </div>
+
+    <div class="form-panel">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_numero_cargamento">Número de cargamento</label>
+                    {{ form.numero_cargamento }}
+                    {% if form.numero_cargamento.errors %}<ul class="errorlist">{{ form.numero_cargamento.errors }}</ul>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_fecha_reclamo">Fecha del reclamo</label>
+                    {{ form.fecha_reclamo }}
+                    {% if form.fecha_reclamo.errors %}<ul class="errorlist">{{ form.fecha_reclamo.errors }}</ul>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_variedad_rosa">Variedad de rosa</label>
+                    {{ form.variedad_rosa }}
+                    {% if form.variedad_rosa.errors %}<ul class="errorlist">{{ form.variedad_rosa.errors }}</ul>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_cantidad_afectada">Cantidad afectada</label>
+                    {{ form.cantidad_afectada }}
+                    {% if form.cantidad_afectada.errors %}<ul class="errorlist">{{ form.cantidad_afectada.errors }}</ul>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_tipo_problema">Tipo de problema</label>
+                    {{ form.tipo_problema }}
+                    {% if form.tipo_problema.errors %}<ul class="errorlist">{{ form.tipo_problema.errors }}</ul>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_archivos">Evidencia (fotos o videos)</label>
+                    {{ form.archivos }}
+                    {% if form.archivos.errors %}<ul class="errorlist">{{ form.archivos.errors }}</ul>{% endif %}
+                    <small style="font-size:12px;color:var(--gray-400);">Máximo 10 MB por archivo.</small>
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label for="id_descripcion">Descripción detallada</label>
+                    {{ form.descripcion }}
+                    {% if form.descripcion.errors %}<ul class="errorlist">{{ form.descripcion.errors }}</ul>{% endif %}
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:8px;">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Enviar Reclamo</button>
+                <a href="{% url 'dashboard_cliente' %}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

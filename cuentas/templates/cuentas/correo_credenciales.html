@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;">
+        <tr>
+            <td align="center">
+                <table width="560" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+                    <!-- Encabezado verde -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#1a3c34,#2d6a5a);padding:32px 40px;text-align:center;">
+                            <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;">Alexandra <span style="font-weight:400;opacity:0.75;">Farms</span></h1>
+                            <p style="margin:8px 0 0;color:rgba(255,255,255,0.7);font-size:13px;">
+                                {% if lang == 'en' %}Quality Management Platform{% elif lang == 'ru' %}Платформа управления качеством{% else %}Plataforma de Gestión de Calidad{% endif %}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Cuerpo -->
+                    <tr>
+                        <td style="padding:36px 40px;">
+                            <p style="margin:0 0 20px;font-size:15px;color:#424242;line-height:1.6;">
+                                {% if lang == 'en' %}Dear{% elif lang == 'ru' %}Уважаемый(ая){% else %}Estimado(a){% endif %} <strong>{{ nombre }}</strong>,
+                            </p>
+                            <p style="margin:0 0 24px;font-size:14px;color:#616161;line-height:1.7;">
+                                {% if lang == 'en' %}
+                                    Your credentials have been created to access our quality management platform, where you can register claims or incidents about your rose shipments.
+                                {% elif lang == 'ru' %}
+                                    Ваши учётные данные созданы для доступа к нашей платформе управления качеством, где вы можете регистрировать претензии по поставкам роз.
+                                {% else %}
+                                    Se han creado sus credenciales para acceder a nuestra plataforma de gestión de calidad, donde podrá registrar reclamos o incidencias sobre sus cargamentos de rosas.
+                                {% endif %}
+                            </p>
+
+                            <!-- Credenciales -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;border-radius:10px;overflow:hidden;margin-bottom:24px;">
+                                <tr>
+                                    <td style="padding:16px 20px;border-bottom:1px solid #e0e0e0;">
+                                        <p style="margin:0 0 4px;font-size:11px;color:#9e9e9e;text-transform:uppercase;letter-spacing:1px;">
+                                            {% if lang == 'en' %}Username{% elif lang == 'ru' %}Имя пользователя{% else %}Usuario{% endif %}
+                                        </p>
+                                        <p style="margin:0;font-size:15px;color:#212121;font-weight:600;">{{ email }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:16px 20px;">
+                                        <p style="margin:0 0 4px;font-size:11px;color:#9e9e9e;text-transform:uppercase;letter-spacing:1px;">
+                                            {% if lang == 'en' %}Password{% elif lang == 'ru' %}Пароль{% else %}Contraseña{% endif %}
+                                        </p>
+                                        <p style="margin:0;font-size:15px;color:#212121;font-weight:600;font-family:monospace;letter-spacing:1px;">{{ password }}</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin:0 0 24px;font-size:13px;color:#757575;line-height:1.6;">
+                                {% if lang == 'en' %}
+                                    Upon first login, the system will ask you to change your password.<br>
+                                    <strong>This temporary link expires in 72 hours.</strong>
+                                {% elif lang == 'ru' %}
+                                    При первом входе система попросит вас изменить пароль.<br>
+                                    <strong>Эта временная ссылка истекает через 72 часа.</strong>
+                                {% else %}
+                                    Al ingresar por primera vez, el sistema le solicitará cambiar su contraseña.<br>
+                                    <strong>Este enlace temporal expira en 72 horas.</strong>
+                                {% endif %}
+                            </p>
+
+                            <!-- Botón -->
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center">
+                                        <a href="https://quality.alexandrafarms.com{{ login_url }}"
+                                           style="display:inline-block;padding:14px 40px;background:linear-gradient(135deg,#1a3c34,#2d6a5a);color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:14px;">
+                                            {% if lang == 'en' %}Access Platform{% elif lang == 'ru' %}Доступ к платформе{% else %}Acceder a la Plataforma{% endif %}
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Pie -->
+                    <tr>
+                        <td style="padding:20px 40px;background-color:#faf8f5;text-align:center;border-top:1px solid #eeeeee;">
+                            <p style="margin:0;font-size:12px;color:#9e9e9e;">
+                                {% if lang == 'en' %}Cordially,{% elif lang == 'ru' %}С уважением,{% else %}Cordialmente,{% endif %}
+                                <br><strong style="color:#1a3c34;">Alexandra Farms</strong> — {% if lang == 'en' %}Quality Team{% elif lang == 'ru' %}Отдел качества{% else %}Equipo de Calidad{% endif %}
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

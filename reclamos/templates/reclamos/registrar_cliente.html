@@ -1,0 +1,123 @@
+{% extends 'reclamos/base_panel.html' %}
+
+{% block title %}Registrar Cliente — Alexandra Farms{% endblock %}
+
+{% block sidebar_nav %}
+    <div class="nav-section">Vendedor</div>
+    <a href="{% url 'registrar_cliente' %}" class="active"><i class="fas fa-user-plus"></i> Registrar Cliente</a>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Registrar Cliente Comprador</h1>
+        <p>Complete los datos del cliente. Se generará una contraseña temporal que se enviará por correo.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.message == 'cliente_creado' %}
+                <div class="alert alert-success"><i class="fas fa-check-circle"></i> Cliente registrado exitosamente. Las credenciales han sido enviadas por correo electrónico.</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="form-panel">
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_first_name">{{ form.first_name.label }}</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}<ul class="errorlist">{{ form.first_name.errors }}</ul>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_last_name">{{ form.last_name.label }}</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}<ul class="errorlist">{{ form.last_name.errors }}</ul>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_email">{{ form.email.label }}</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<ul class="errorlist">{{ form.email.errors }}</ul>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_phone">{{ form.phone.label }}</label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}<ul class="errorlist">{{ form.phone.errors }}</ul>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_company_name">{{ form.company_name.label }}</label>
+                    {{ form.company_name }}
+                    {% if form.company_name.errors %}<ul class="errorlist">{{ form.company_name.errors }}</ul>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_country">{{ form.country.label }}</label>
+                    {{ form.country }}
+                    {% if form.country.errors %}<ul class="errorlist">{{ form.country.errors }}</ul>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_preferred_language">{{ form.preferred_language.label }}</label>
+                    {{ form.preferred_language }}
+                </div>
+                <div class="form-group">
+                    <label for="id_secretaria">{{ form.secretaria.label }}</label>
+                    {{ form.secretaria }}
+                    {% if form.secretaria.errors %}<ul class="errorlist">{{ form.secretaria.errors }}</ul>{% endif %}
+                </div>
+            </div>
+
+            <div style="margin-top:8px;">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Crear Cuenta y Enviar Credenciales</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de clientes registrados -->
+    <div class="table-card" style="margin-top:32px;">
+        <div class="table-card-header">
+            <h2>Clientes Registrados</h2>
+            <span style="font-size:13px;color:var(--gray-500);">{{ clientes.count }} total</span>
+        </div>
+        {% if clientes %}
+        <table>
+            <thead>
+                <tr><th>Nombre</th><th>Email</th><th>Empresa</th><th>País</th><th>Secretaria</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+                {% for c in clientes %}
+                <tr>
+                    <td><strong>{{ c.user.get_full_name }}</strong></td>
+                    <td style="font-size:13px;">{{ c.user.email }}</td>
+                    <td>{{ c.company_name }}</td>
+                    <td>{{ c.country }}</td>
+                    <td style="font-size:13px;">
+                        {% for a in asignaciones %}
+                            {% if a.cliente == c and a.is_active %}{{ a.secretaria.user.get_full_name }}{% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if c.user.is_active %}
+                            <span class="badge badge-resuelto"><span class="badge-dot"></span> Activo</span>
+                        {% else %}
+                            <span class="badge badge-cerrado"><span class="badge-dot"></span> Inactivo</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding:32px;text-align:center;color:var(--gray-500);font-size:14px;">No hay clientes registrados aún.</div>
+        {% endif %}
+    </div>
+{% endblock %}

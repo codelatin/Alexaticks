@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'cuentas',
+    'reclamos',
 ]
 
 MIDDLEWARE = [
@@ -103,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-eu'
 
 TIME_ZONE = 'UTC'
 
@@ -115,6 +117,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# Archivos estáticos
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
+# Configuración del correo electrónico
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT=587
+EMAIL_HOST_USER="codelatincolombia@gmail.com"
+EMAIL_HOST_PASSWORD="qzbt vepo ggqi gmic"
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL="codelatincolombia@gmail.com"    # App password de Google
+
+# Login URLs
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+
+# Media (para evidencias de reclamos)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
