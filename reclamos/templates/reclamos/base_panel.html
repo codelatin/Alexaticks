@@ -257,8 +257,11 @@
                 <div class="sidebar-user-info">
                     <div class="sidebar-user-name">{{ request.user.get_full_name }}</div>
                     <div class="sidebar-user-role">
-                        {% if perfil.role == 'cliente_comprador' %}Cliente{% elif perfil.role == 'secretaria' %}Secretaria{% elif perfil.role == 'vendedor' %}Vendedor{% endif %}
+                        {% if perfil.role == 'cliente_comprador' %}Cliente
+                        {% elif perfil.role == 'empleado' %}{{ perfil.get_departamento_display }}
+                        {% endif %}
                     </div>
+                    
                 </div>
                 <a href="{% url 'logout' %}" class="sidebar-logout" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></a>
             </div>

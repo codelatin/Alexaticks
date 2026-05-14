@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .models import Perfil, AsignacionSecretaria
+from .models import Perfil, AsignacionVendedor
 from .forms import LoginForm, RegistroClienteForm, CambiarPasswordForm
 
 
@@ -63,10 +63,11 @@ def login_view(request):
                 return redirect('cambiar_password')
             if perfil.role == 'cliente_comprador':
                 return redirect('dashboard_cliente')
-            elif perfil.role == 'secretaria':
-                return redirect('panel_secretaria')
-            elif perfil.role == 'vendedor':
-                return redirect('registrar_cliente')
+            elif perfil.role == 'empleado':
+                if perfil.departamento == 'calidad':
+                    return redirect('panel_calidad')
+                else:
+                    return redirect('panel_empleado')
         except Perfil.DoesNotExist:
             logout(request)
 
@@ -83,8 +84,7 @@ def login_view(request):
                 messages.error(request, 'credenciales_invalidas')
                 return render(request, 'cuentas/login.html', {'form': form})
 
-            # Solo estos roles pueden usar el login
-            if perfil.role not in ('cliente_comprador', 'secretaria', 'vendedor'):
+            if perfil.role not in ('cliente_comprador', 'empleado'):
                 messages.error(request, 'credenciales_invalidas')
                 return render(request, 'cuentas/login.html', {'form': form})
 
@@ -125,10 +125,11 @@ def login_view(request):
                 return redirect('cambiar_password')
             if perfil.role == 'cliente_comprador':
                 return redirect('dashboard_cliente')
-            if perfil.role == 'secretaria':
-                return redirect('panel_secretaria')
-            if perfil.role == 'vendedor':
-                return redirect('registrar_cliente')
+            if perfil.role == 'empleado':
+                if perfil.departamento == 'calidad':
+                    return redirect('panel_calidad')
+                else:
+                    return redirect('panel_empleado')
     else:
         form = LoginForm()
 
@@ -154,6 +155,8 @@ def cambiar_password_view(request):
             return redirect('panel_secretaria')
         if perfil.role == 'vendedor':
             return redirect('registrar_cliente')
+        if perfil.role == 'calidad':
+            return redirect('panel_calidad')
         return redirect('login')
 
     if request.method == 'POST':
@@ -178,6 +181,8 @@ def cambiar_password_view(request):
                 return redirect('panel_secretaria')
             if perfil.role == 'vendedor':
                 return redirect('registrar_cliente')
+            if perfil.role == 'calidad':
+                return redirect('panel_calidad')
             return redirect('login')
     else:
         form = CambiarPasswordForm(user=request.user)
@@ -215,9 +220,9 @@ def registrar_cliente_view(request):
                 temp_password_expires_at=timezone.now() + timedelta(hours=72)
             )
 
-            secretaria = form.cleaned_data['secretaria']
-            AsignacionSecretaria.objects.create(
-                secretaria=secretaria,
+            vendedor = request.user.perfil  # El vendedor que está creando al cliente
+            AsignacionVendedor.objects.create(
+                vendedor=vendedor,
                 cliente=perfil
             )
 
@@ -229,7 +234,7 @@ def registrar_cliente_view(request):
         form = RegistroClienteForm()
 
     clientes = Perfil.objects.filter(role='cliente_comprador').select_related('user').order_by('-created_at')
-    asignaciones = AsignacionSecretaria.objects.filter(is_active=True).select_related('secretaria__user', 'cliente__user')
+    asignaciones = AsignacionVendedor.objects.filter(is_active=True).select_related('vendedor__user', 'cliente__user')
 
     return render(request, 'reclamos/registrar_cliente.html', {
         'form': form,

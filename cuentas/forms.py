@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm
-from .models import Perfil, AsignacionSecretaria
+from .models import Perfil 
 
 
 class LoginForm(forms.Form):
@@ -54,11 +54,8 @@ class RegistroClienteForm(forms.ModelForm):
         initial='es',
         widget=forms.Select(attrs={'class': 'form-input'})
     )
-    secretaria = forms.ModelChoiceField(
-        label='Asignar a secretaria',
-        queryset=Perfil.objects.filter(role='secretaria', user__is_active=True),
-        widget=forms.Select(attrs={'class': 'form-input'})
-    )
+    
+    # Ya no se necesita porque en la vista (views.py) tomamos al vendedor que está logueado.
 
     class Meta:
         model = Perfil

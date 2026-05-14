@@ -1,53 +1,71 @@
 from django import forms
-from django.core.exceptions import ValidationError
-from .models import Reclamo, Evidencia, Respuesta
+from django.forms import ModelForm
+from django.utils.translation import gettext_lazy as _ 
+from .models import Reclamo, Respuesta, TipoProblema
 
 
-# Widget personalizado que SÍ permite múltiples archivos
+# ==========================================
+# WIDGET PERSONALIZADO (Compatible con Django 5-6 debo acordarme de esto)
+# ==========================================
 class MultipleFileInput(forms.FileInput):
     allow_multiple_selected = True
 
 
-class ReclamoForm(forms.ModelForm):
+# ==========================================
+# FORMULARIO DE RECLAMOS
+# ==========================================
+class ReclamoForm(ModelForm):
+    # Campo extra para subir múltiples archivos
     archivos = forms.FileField(
-        label='Evidencia (fotos o videos)',
-        required=False,
+        label=_('Evidencias (Mínimo 1, máximo 10)'),
         widget=MultipleFileInput(attrs={
-            'class': 'form-input',
-            'accept': 'image/*,video/*'
-        })
+            'accept': 'image/png, image/jpeg, application/pdf'
+        }),
+        required=True
     )
 
     class Meta:
         model = Reclamo
         fields = [
-            'numero_cargamento', 'fecha_reclamo', 'variedad_rosa',
-            'cantidad_afectada', 'tipo_problema', 'descripcion'
+            'tipo_problema', 
+            'variedad_rosa', 
+            'numero_guia_master', 
+            'fecha_despacho', 
+            'descripcion'
         ]
         widgets = {
-            'numero_cargamento': forms.TextInput(attrs={'class': 'form-input'}),
-            'fecha_reclamo': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
-            'variedad_rosa': forms.TextInput(attrs={'class': 'form-input'}),
-            'cantidad_afectada': forms.NumberInput(attrs={'class': 'form-input', 'min': 1}),
             'tipo_problema': forms.Select(attrs={'class': 'form-input'}),
+            'variedad_rosa': forms.TextInput(attrs={'class': 'form-input'}),
+            'numero_guia_master': forms.TextInput(attrs={'class': 'form-input'}),
+            'fecha_despacho': forms.DateInput(attrs={'type': 'date', 'class': 'form-input'}),
             'descripcion': forms.Textarea(attrs={'class': 'form-input', 'rows': 5}),
         }
 
-    def clean_archivos(self):
-        archivos = self.files.getlist('archivos')
-        for archivo in archivos:
-            if archivo.size > 10 * 1024 * 1024:
-                raise ValidationError(f'El archivo "{archivo.name}" excede el límite de 10 MB.')
-        return archivos
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtrar solo los tipos de problemas activos
+        self.fields['tipo_problema'].queryset = TipoProblema.objects.filter(activo=True)
+        
+        # Personalizar etiquetas (Listo para traducciones futuras)
+        self.fields['tipo_problema'].label = _('Tipo de Problema')
+        self.fields['variedad_rosa'].label = _('Variedad de rosa')
+        self.fields['numero_guia_master'].label = _('Número de Guía Master')
+        self.fields['fecha_despacho'].label = _('Fecha de despacho')
+        self.fields['descripcion'].label = _('Descripción detallada')
 
 
-class RespuestaForm(forms.ModelForm):
+# ==========================================
+# FORMULARIO DE RESPUESTAS
+# ==========================================
+class RespuestaForm(ModelForm):
     class Meta:
         model = Respuesta
-        fields = ['mensaje']
+        fields = ['mensaje', 'es_interno']
         widgets = {
-            'mensaje': forms.Textarea(attrs={
-                'class': 'form-input', 'rows': 4,
-                'placeholder': 'Escriba su respuesta...'
-            })
+            'mensaje': forms.Textarea(attrs={'class': 'form-input', 'rows': 4}),
+            'es_interno': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        labels = {
+            'mensaje': _('Mensaje'),
+            'es_interno': _('Nota interna (No visible para el cliente)'),
         }

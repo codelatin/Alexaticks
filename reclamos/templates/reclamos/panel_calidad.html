@@ -1,0 +1,71 @@
+{% extends 'reclamos/base_panel.html' %}
+
+{% block title %}Panel Calidad — Alexandra Farms{% endblock %}
+
+{% block sidebar_nav %}
+    <div class="nav-section">Menú</div>
+    <a href="{% url 'panel_calidad' %}" class="active"><i class="fas fa-th-large"></i> Panel</a>
+{% endblock %}
+
+<!-- NOTA: Cambié "body" por "content". Asegúrate de que en tu base_panel.html el bloque principal se llame "content" -->
+{% block content %}
+    <div class="dashboard-container">
+        <main class="main-content" style="margin: 20px;">
+            
+            <h1><i class="fas fa-clipboard-check"></i> Reclamos Pendientes de Validación</h1>
+            
+            <!-- KPI Cards -->
+            <section class="kpis" style="margin-bottom: 20px;">
+                <div class="kpi-card" style="background: #fff3cd; border-left: 5px solid #ffc107;">
+                    <i class="fas fa-hourglass-half" style="color: #ffc107;"></i>
+                    <div class="kpi-info">
+                        <h3>En espera de revisión</h3>
+                        <p style="font-size: 2rem; font-weight: bold;">{{ en_calidad_count }}</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TABLA DE RECLAMOS REALES -->
+            <section class="card">
+                <div class="table-container">
+                    <table class="table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                            <tr>
+                                <th style="padding: 10px;">Número</th>
+                                <th style="padding: 10px;">Cliente</th>
+                                <th style="padding: 10px;">Tipo de Problema</th>
+                                <th style="padding: 10px;">Variedad</th>
+                                <th style="padding: 10px;">Fecha</th>
+                                <th style="padding: 10px;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reclamo in reclamos %}
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 10px;"><strong>{{ reclamo.numero }}</strong></td>
+                                <td style="padding: 10px;">{{ reclamo.cliente.company_name }}</td>
+                                <td style="padding: 10px;">{{ reclamo.tipo_problema }}</td>
+                                <td style="padding: 10px;">{{ reclamo.variedad_rosa }}</td>
+                                <td style="padding: 10px;">{{ reclamo.created_at|date:"d/m/Y H:i" }}</td>
+                                <td style="padding: 10px;">
+                                    <a href="{% url 'detalle_reclamo' reclamo.pk %}" class="btn btn-primary" style="padding: 5px 10px; text-decoration: none; background: #28a745; color: white; border-radius: 4px;">
+                                        <i class="fas fa-search"></i> Revisar y Asignar
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" style="padding: 20px; text-align: center; color: #6c757d;">
+                                    <i class="fas fa-check-circle" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                                    No hay reclamos pendientes en este momento. ¡Buen trabajo!
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+{% endblock content %}

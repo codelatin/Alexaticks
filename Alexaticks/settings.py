@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -138,4 +139,17 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 # Media (para evidencias de reclamos)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Mi Panel Admin",
+    "site_header": "Administración",
+    "site_brand": "Mi Proyecto",
+    "welcome_sign": "Bienvenido al panel",
+    "copyright": "Mi empresa",
+
+    "topmenu_links": [
+        {"name": "Inicio", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"model": "auth.User"},
+    ],
+}
 
