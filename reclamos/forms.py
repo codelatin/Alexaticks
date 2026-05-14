@@ -5,10 +5,27 @@ from .models import Reclamo, Respuesta, TipoProblema
 
 
 # ==========================================
-# WIDGET PERSONALIZADO (Compatible con Django 5-6 debo acordarme de esto)
+# WIDGET 
 # ==========================================
 class MultipleFileInput(forms.FileInput):
     allow_multiple_selected = True
+
+
+# FileInput.value_from_datadict usa getlist()
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('widget', MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    # hay sobreescribir el método clean(), para leer la lista de archivos
+    def clean(self, data, initial=None):
+        if not data:
+            if self.required:
+                raise forms.ValidationError(self.error_messages['required'], code='required')
+            return []
+        if isinstance(data, (list, tuple)):
+            return [super(MultipleFileField, self).clean(f, initial) for f in data]
+        return [super(MultipleFileField, self).clean(data, initial)]
 
 
 # ==========================================
@@ -16,7 +33,7 @@ class MultipleFileInput(forms.FileInput):
 # ==========================================
 class ReclamoForm(ModelForm):
     # Campo extra para subir múltiples archivos
-    archivos = forms.FileField(
+    archivos = MultipleFileField(
         label=_('Evidencias (Mínimo 1, máximo 10)'),
         widget=MultipleFileInput(attrs={
             'accept': 'image/png, image/jpeg, application/pdf'
