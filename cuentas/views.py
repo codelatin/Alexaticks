@@ -15,6 +15,7 @@ from .forms import LoginForm, RegistroClienteForm, CambiarPasswordForm
 
 
 
+
 def generar_password_temporal(longitud=12):
     """Genera una contraseña segura que cumple las validaciones de Django."""
     caracteres = string.ascii_letters + string.digits + "!@#$%&*"
@@ -79,7 +80,20 @@ def login_view(request):
 
             try:
                 user = User.objects.get(email=email)
-                perfil = user.perfil
+                
+                # ---> PUERTA DE ESCAPE PARA SUPERUSUARIOS <---
+                if user.is_superuser:
+                    # Si es superadmin, validamos contraseña y lo mandamos directo a su panel
+                    if not user.check_password(password):
+                        messages.error(request, 'credenciales_invalidas')
+                        return render(request, 'cuentas/login.html', {'form': form})
+                        
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    return redirect('panel_gerencia')
+                else:
+                    # Si es un usuario normal, sí busca su Perfil
+                    perfil = user.perfil
+                    
             except (User.DoesNotExist, Perfil.DoesNotExist):
                 messages.error(request, 'credenciales_invalidas')
                 return render(request, 'cuentas/login.html', {'form': form})
@@ -121,6 +135,8 @@ def login_view(request):
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             # Redirigir según rol
+            if request.user.is_superuser:
+                return redirect('panel_gerencia')
             if perfil.must_change_password:
                 return redirect('cambiar_password')
             if perfil.role == 'cliente_comprador':

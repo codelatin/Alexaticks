@@ -15,4 +15,9 @@ urlpatterns = [
     # ==========================================
     path('calidad/panel/', views.panel_calidad, name='panel_calidad'),
     path('empleado/panel/', views.panel_empleado, name='panel_empleado'),
+
+    # ==========================================
+    # RUTA DE SUperAdmin.
+    # ==========================================
+    path('gerencia/', views.panel_gerencia, name='panel_gerencia'),
 ]
