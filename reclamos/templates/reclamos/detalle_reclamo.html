@@ -122,6 +122,33 @@
     </div>
     {% endif %}
 
+     <!-- ========================================== -->
+    <!-- PANEL DE ASIGNACIÓN (SOLO PARA POSCOSECHA) -->
+    <!-- ========================================== -->
+    {% if perfil.departamento == 'poscosecha' and empleados_disponibles %}
+    <div class="form-panel" style="border-left: 5px solid #17a2b8; background-color: #f0fbff; margin-bottom: 24px;">
+        <h3 style="color: #0c6b82; margin-bottom: 15px;"><i class="fas fa-user-plus"></i> Asignar responsable interno</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="asignar_empleado" value="true">
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="font-weight: bold; font-size:13px;">¿Quién atenderá este reclamo?</label>
+                <select name="empleado_asignado" id="select-empleado-pos" class="form-input" required>
+                    <option value="">-- Seleccionar empleado --</option>
+                    {% for emp in empleados_disponibles %}
+                        <option value="{{ emp.id }}">{{ emp.user.get_full_name }} ({{ emp.get_departamento_display }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="background-color: #17a2b8; border-color: #17a2b8;">
+                <i class="fas fa-check-circle"></i> Asignar empleado
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- ========================================== -->
+
     <!-- ========================================== -->
     <!-- CHAT / TIMELINE                          -->
     <!-- ========================================== -->

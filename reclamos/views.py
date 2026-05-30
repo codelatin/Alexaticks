@@ -73,20 +73,15 @@ def detalle_reclamo(request, pk):
     perfil = request.user.perfil
     reclamo = get_object_or_404(Reclamo, pk=pk)
 
-    # Permiso: Solo el cliente dueño puede verlo
     if perfil.role == 'cliente_comprador' and reclamo.cliente != perfil:
         messages.error(request, 'sin_permiso')
         return redirect('dashboard_cliente')
 
-    # Permiso: Empleados solo ven si están asignados al área (o son gerencia/calidad)
     if perfil.role == 'empleado' and perfil.departamento not in ['calidad', 'gerencia']:
         if not AsignacionArea.objects.filter(reclamo=reclamo, responsable=perfil).exists():
             messages.error(request, 'sin_permiso')
             return redirect('panel_empleado')
 
-    # ==========================================
-    # SEPARACIÓN DE CHATS (Público vs Interno)
-    # ==========================================
     chat_externo = reclamo.respuestas.filter(es_interno=False).select_related('autor__user')
     chat_interno = None
     
@@ -96,16 +91,10 @@ def detalle_reclamo(request, pk):
     evidencias = reclamo.evidencias.all()
     form = None
 
-    # ==========================================
-    # LÓGICA PARA EL DEPARTAMENTO DE CALIDAD
-    # ==========================================
     if perfil.departamento == 'calidad':
         
-        # ---> ACCIÓN: APROBAR RECLAMO Y ASIGNAR A EMPLEADO <---
         if request.method == 'POST' and 'aprobar_reclamo' in request.POST:
             estado_anterior = reclamo.estado
-            
-            # 1. Cambiar estado a "En Proceso" porque ya hay alguien trabajando en ello
             reclamo.estado = 'en_proceso'
             reclamo.inspector_calidad = perfil
             reclamo.save(update_fields=['estado', 'inspector_calidad', 'updated_at'])
@@ -115,14 +104,11 @@ def detalle_reclamo(request, pk):
                 estado_nuevo='en_proceso', usuario=perfil
             )
 
-            # 2. SACAR AL EMPLEADO QUE MILENA ELIGIÓ EN EL HTML
             empleado_elegido_id = request.POST.get('empleado_asignado')
             from cuentas.models import Perfil as PerfilCuenta
             
             try:
                 empleado_elegido = PerfilCuenta.objects.get(id=empleado_elegido_id)
-                
-                # 3. CREAR LA ASIGNACIÓN EN LA BASE DE DATOS
                 AsignacionArea.objects.create(
                     reclamo=reclamo,
                     responsable=empleado_elegido,
@@ -134,7 +120,6 @@ def detalle_reclamo(request, pk):
 
             return redirect('detalle_reclamo', pk=reclamo.pk)
 
-        # ---> ACCIÓN: RECHAZAR RECLAMO <---
         if request.method == 'POST' and 'rechazar_reclamo' in request.POST:
             estado_anterior = reclamo.estado
             motivo_id = request.POST.get('motivo_rechazo')
@@ -154,11 +139,24 @@ def detalle_reclamo(request, pk):
             messages.error(request, 'reclamo_rechazado')
             return redirect('detalle_reclamo', pk=reclamo.pk)
 
-    # ==========================================
-    # LÓGICA PARA ÁREAS OPERATIVAS (Responder)
-    # ==========================================
     elif perfil.departamento in ['poscosecha', 'produccion', 'exportaciones', 'ventas']:
-        if request.method == 'POST':
+
+        if request.method == 'POST' and 'asignar_empleado' in request.POST:
+            from cuentas.models import Perfil as PerfilCuenta
+            empleado_id = request.POST.get('empleado_asignado')
+            try:
+                empleado = PerfilCuenta.objects.get(id=empleado_id)
+                AsignacionArea.objects.create(
+                    reclamo=reclamo,
+                    responsable=empleado,
+                    departamento=empleado.get_departamento_display()
+                )
+                messages.success(request, 'empleado_asignado')
+            except PerfilCuenta.DoesNotExist:
+                messages.error(request, 'error_asignacion')
+            return redirect('detalle_reclamo', pk=reclamo.pk)
+
+        elif request.method == 'POST':
             form = RespuestaForm(request.POST)
             if form.is_valid():
                 respuesta = form.save(commit=False)
@@ -180,25 +178,27 @@ def detalle_reclamo(request, pk):
         else:
             form = RespuestaForm()
 
-    # ==========================================
-    # CONTEXTO PARA EL TEMPLATE HTML
-    # ==========================================
     motivos_rechazo = MotivoRechazo.objects.filter(activo=True) if perfil.departamento == 'calidad' else None
 
-    # Calcular a qué empleados se les puede asignar según el tipo de problema
     empleados_disponibles = None
     if perfil.departamento == 'calidad' and reclamo.estado == 'pendiente_validacion':
         categoria = reclamo.tipo_problema.categoria.nombre.lower()
-        dept_destino = "produccion" # Por defecto
-        
-        if 'empaque' in categoria or 'contenido' in categoria:
-            dept_destino = 'poscosecha'
-        elif 'documentación' in categoria or 'identificación' in categoria:
+        dept_destino = 'poscosecha'  # ← CAMBIADO: poscosecha por defecto
+
+        if 'documentacion' in categoria or 'identificacion' in categoria:
             dept_destino = 'exportaciones'
             
         from cuentas.models import Perfil as PerfilCuenta
         empleados_disponibles = PerfilCuenta.objects.filter(
             departamento=dept_destino, 
+            role='empleado',
+            user__is_active=True
+        )
+
+    elif perfil.departamento == 'poscosecha' and reclamo.estado in ['en_proceso', 'en_investigacion']:
+        from cuentas.models import Perfil as PerfilCuenta
+        empleados_disponibles = PerfilCuenta.objects.filter(
+            departamento='poscosecha',
             role='empleado',
             user__is_active=True
         )
@@ -211,9 +211,8 @@ def detalle_reclamo(request, pk):
         'form': form,
         'perfil': perfil,
         'motivos_rechazo': motivos_rechazo,
-        'empleados_disponibles': empleados_disponibles, # <--- LA LÍNEA QUE FALTABA
+        'empleados_disponibles': empleados_disponibles,
     })
-
 # =============================================
 # PANEL DE CONTROL DE CALIDAD
 # =============================================
