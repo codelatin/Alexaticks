@@ -53,9 +53,6 @@ def role_required(*roles):
     return decorator
 
 
-# =============================================
-# LOGIN (Usa check_password en vez de authenticate)
-# =============================================
 def login_view(request):
     if request.user.is_authenticated:
         try:
@@ -67,6 +64,12 @@ def login_view(request):
             elif perfil.role == 'empleado':
                 if perfil.departamento == 'calidad':
                     return redirect('panel_calidad')
+                elif perfil.departamento == 'poscosecha':
+                    return redirect('panel_poscosecha')
+                elif perfil.departamento == 'produccion':
+                    return redirect('panel_produccion')
+                elif perfil.departamento == 'exportaciones':
+                    return redirect('panel_exportaciones')
                 else:
                     return redirect('panel_empleado')
         except Perfil.DoesNotExist:
@@ -81,9 +84,7 @@ def login_view(request):
             try:
                 user = User.objects.get(email=email)
                 
-                # ---> PUERTA DE ESCAPE PARA SUPERUSUARIOS <---
                 if user.is_superuser:
-                    # Si es superadmin, validamos contraseña y lo mandamos directo a su panel
                     if not user.check_password(password):
                         messages.error(request, 'credenciales_invalidas')
                         return render(request, 'cuentas/login.html', {'form': form})
@@ -91,7 +92,6 @@ def login_view(request):
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     return redirect('panel_gerencia')
                 else:
-                    # Si es un usuario normal, sí busca su Perfil
                     perfil = user.perfil
                     
             except (User.DoesNotExist, Perfil.DoesNotExist):
@@ -102,17 +102,13 @@ def login_view(request):
                 messages.error(request, 'credenciales_invalidas')
                 return render(request, 'cuentas/login.html', {'form': form})
 
-            # Verificar si la cuenta está bloqueada
             if perfil.is_locked:
                 return render(request, 'cuentas/cuenta_bloqueada.html')
 
-            # Verificar contraseña temporal expirada (solo clientes)
             if perfil.must_change_password and perfil.is_temp_password_expired:
                 return render(request, 'cuentas/enlace_expirado.html')
 
-            # Verificar contraseña directamente (sin authenticate)
             if not user.check_password(password):
-                # Incrementar intentos fallidos
                 perfil.failed_attempts += 1
                 if perfil.failed_attempts >= 5:
                     perfil.locked_until = timezone.now() + timedelta(minutes=30)
@@ -122,19 +118,16 @@ def login_view(request):
                 messages.error(request, 'credenciales_invalidas')
                 return render(request, 'cuentas/login.html', {'form': form})
 
-            # Verificar que esté activo
             if not user.is_active:
                 messages.error(request, 'credenciales_invalidas')
                 return render(request, 'cuentas/login.html', {'form': form})
 
-            # Resetear intentos fallidos
             perfil.failed_attempts = 0
             perfil.save(update_fields=['failed_attempts'])
 
-            # Iniciar sesión directamente
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-            # Redirigir según rol
+            # Redirigir según rol y departamento
             if request.user.is_superuser:
                 return redirect('panel_gerencia')
             if perfil.must_change_password:
@@ -144,6 +137,12 @@ def login_view(request):
             if perfil.role == 'empleado':
                 if perfil.departamento == 'calidad':
                     return redirect('panel_calidad')
+                elif perfil.departamento == 'poscosecha':
+                    return redirect('panel_poscosecha')
+                elif perfil.departamento == 'produccion':
+                    return redirect('panel_produccion')
+                elif perfil.departamento == 'exportaciones':
+                    return redirect('panel_exportaciones')
                 else:
                     return redirect('panel_empleado')
     else:

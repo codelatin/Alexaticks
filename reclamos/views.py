@@ -21,7 +21,6 @@ def dashboard_cliente(request):
     perfil = request.user.perfil
     reclamos = Reclamo.objects.filter(cliente=perfil).order_by('-created_at')
 
-    # Actualizados los estados según el documento
     pendientes = reclamos.filter(estado__in=['pendiente_validacion', 'en_validacion', 'aprobado_pendiente']).count()
     en_proceso = reclamos.filter(estado__in=['en_proceso', 'en_investigacion', 'resolucion_propuesta']).count()
     finalizados = reclamos.filter(estado__in=['resuelto', 'cerrado', 'rechazado']).count()
@@ -47,7 +46,7 @@ def crear_reclamo(request):
         if form.is_valid():
             reclamo = form.save(commit=False)
             reclamo.cliente = perfil
-            reclamo.save() # El estado 'pendiente_validacion' se asigna por defecto en el modelo
+            reclamo.save()
 
             archivos = form.cleaned_data.get('archivos')
             if archivos:
@@ -65,9 +64,6 @@ def crear_reclamo(request):
     })
 
 
-# =============================================
-# DETALLE DEL RECLAMO (Cliente, Empleados)
-# =============================================
 @role_required('cliente_comprador', 'empleado')
 def detalle_reclamo(request, pk):
     perfil = request.user.perfil
@@ -180,17 +176,12 @@ def detalle_reclamo(request, pk):
 
     motivos_rechazo = MotivoRechazo.objects.filter(activo=True) if perfil.departamento == 'calidad' else None
 
+    # ← CAMBIO: ahora muestra empleados de los tres departamentos operativos
     empleados_disponibles = None
     if perfil.departamento == 'calidad' and reclamo.estado == 'pendiente_validacion':
-        categoria = reclamo.tipo_problema.categoria.nombre.lower()
-        dept_destino = 'poscosecha'  # ← CAMBIADO: poscosecha por defecto
-
-        if 'documentacion' in categoria or 'identificacion' in categoria:
-            dept_destino = 'exportaciones'
-            
         from cuentas.models import Perfil as PerfilCuenta
         empleados_disponibles = PerfilCuenta.objects.filter(
-            departamento=dept_destino, 
+            departamento__in=['poscosecha', 'produccion', 'exportaciones'],
             role='empleado',
             user__is_active=True
         )
@@ -213,6 +204,8 @@ def detalle_reclamo(request, pk):
         'motivos_rechazo': motivos_rechazo,
         'empleados_disponibles': empleados_disponibles,
     })
+
+
 # =============================================
 # PANEL DE CONTROL DE CALIDAD
 # =============================================
@@ -237,13 +230,12 @@ def panel_calidad(request):
 
 
 # =============================================
-# PANEL GENÉRICO PARA EMPLEADOS (Ventas, Poscosecha, etc.)
+# PANEL GENÉRICO PARA EMPLEADOS
 # =============================================
 @role_required('empleado')
 def panel_empleado(request):
     perfil = request.user.perfil
     
-    # Los reclamos que ya fueron aprobados y asignados a este departamento
     asignaciones = AsignacionArea.objects.filter(
         responsable=perfil
     ).select_related('reclamo__cliente__user').order_by('-reclamo__created_at')
@@ -257,28 +249,95 @@ def panel_empleado(request):
     })
 
 
+# =============================================
+# PANEL POSCOSECHA
+# =============================================
+@role_required('empleado')
+def panel_poscosecha(request):
+    perfil = request.user.perfil
+    if perfil.departamento != 'poscosecha':
+        messages.error(request, 'sin_permiso')
+        return redirect('login')
+
+    asignaciones = AsignacionArea.objects.filter(
+        responsable=perfil
+    ).select_related('reclamo__cliente__user').order_by('-reclamo__created_at')
+
+    pendientes = asignaciones.filter(reclamo__estado='en_proceso').count()
+
+    return render(request, 'reclamos/panel_poscosecha.html', {
+        'perfil': perfil,
+        'asignaciones': asignaciones,
+        'pendientes': pendientes,
+    })
+
+
+# =============================================
+# PANEL PRODUCCIÓN
+# =============================================
+@role_required('empleado')
+def panel_produccion(request):
+    perfil = request.user.perfil
+    if perfil.departamento != 'produccion':
+        messages.error(request, 'sin_permiso')
+        return redirect('login')
+
+    asignaciones = AsignacionArea.objects.filter(
+        responsable=perfil
+    ).select_related('reclamo__cliente__user').order_by('-reclamo__created_at')
+
+    pendientes = asignaciones.filter(reclamo__estado='en_proceso').count()
+
+    return render(request, 'reclamos/panel_produccion.html', {
+        'perfil': perfil,
+        'asignaciones': asignaciones,
+        'pendientes': pendientes,
+    })
+
+
+# =============================================
+# PANEL EXPORTACIONES
+# =============================================
+@role_required('empleado')
+def panel_exportaciones(request):
+    perfil = request.user.perfil
+    if perfil.departamento != 'exportaciones':
+        messages.error(request, 'sin_permiso')
+        return redirect('login')
+
+    asignaciones = AsignacionArea.objects.filter(
+        responsable=perfil
+    ).select_related('reclamo__cliente__user').order_by('-reclamo__created_at')
+
+    pendientes = asignaciones.filter(reclamo__estado='en_proceso').count()
+
+    return render(request, 'reclamos/panel_exportaciones.html', {
+        'perfil': perfil,
+        'asignaciones': asignaciones,
+        'pendientes': pendientes,
+    })
+
+
+# =============================================
+# PANEL GERENCIA
+# =============================================
 @login_required
 def panel_gerencia(request):
-    # Seguridad: Solo superusuarios pueden ver esto
     if not request.user.is_superuser:
         return redirect('login')
 
-    # 1. Traer TODOS los reclamos (optimizado para no saturar la BD)
     reclamos = Reclamo.objects.select_related(
         'cliente__user', 'inspector_calidad__user', 'tipo_problema'
     ).prefetch_related('areas_asignadas__responsable__user').order_by('-created_at')
 
-    # 2. Calcular KPIs para las tarjetas
     total_reclamos = reclamos.count()
     pendientes_calidad = reclamos.filter(estado='pendiente_validacion').count()
     resueltos = reclamos.filter(estado__in=['resuelto', 'cerrado']).count()
 
-    # 3. Datos para el GRÁFICO 1: Reclamos por Estado
     estados_data = Reclamo.objects.values('estado').annotate(total=Count('id'))
     estados_labels = [item['estado'].replace('_', ' ').title() for item in estados_data]
     estados_counts = [item['total'] for item in estados_data]
 
-    # 4. Datos para el GRÁFICO 2: Reclamos por Departamento Asignado
     areas_data = AsignacionArea.objects.values('departamento').annotate(total=Count('reclamo', distinct=True))
     areas_labels = [item['departamento'] for item in areas_data]
     areas_counts = [item['total'] for item in areas_data]
