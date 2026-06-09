@@ -1,0 +1,70 @@
+{% extends 'reclamos/base_panel.html' %}
+
+{% block title %}Mi Panel — Alexandra Farms{% endblock %}
+
+{% block sidebar_nav %}
+    <div class="nav-section">Menú</div>
+    <a href="{% url 'panel_poscosecha' %}" class="active"><i class="fas fa-seedling"></i> Reclamos Asignados</a>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1><i class="fas fa-seedling" style="color: var(--green-medium);"></i> Reclamos Asignados a Poscosecha</h1>
+        <p>Reclamos revisados y aprobados por Control de Calidad.</p>
+    </div>
+
+    <div class="stats-grid" style="margin-bottom: 28px;">
+        <div class="stat-card">
+            <div class="stat-card-icon yellow"><i class="fas fa-hourglass-half"></i></div>
+            <div>
+                <div class="stat-card-value">{{ pendientes }}</div>
+                <div class="stat-card-label">En proceso pendientes</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header">
+            <h2>Lista de Reclamos</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Tipo de Problema</th>
+                    <th>Variedad</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asignacion in asignaciones %}
+                <tr>
+                    <td><strong>{{ asignacion.reclamo.numero }}</strong></td>
+                    <td>{{ asignacion.reclamo.cliente.company_name }}</td>
+                    <td>{{ asignacion.reclamo.tipo_problema }}</td>
+                    <td>{{ asignacion.reclamo.variedad_rosa }}</td>
+                    <td>
+                        <span class="badge badge-en_proceso">
+                            <span class="badge-dot"></span> {{ asignacion.reclamo.get_estado_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'detalle_reclamo' asignacion.reclamo.pk %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-search"></i> Gestionar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align:center; padding:40px; color:var(--gray-500);">
+                        <i class="fas fa-check-circle" style="font-size:2rem; display:block; margin-bottom:10px; color:var(--green-medium);"></i>
+                        No tienes reclamos asignados actualmente. ¡Buen trabajo!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
