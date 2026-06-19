@@ -48,10 +48,38 @@
         .sidebar-nav a i { width: 20px; text-align: center; font-size: 15px; }
         .sidebar-nav a:hover { background: rgba(255,255,255,0.08); color: white; }
         .sidebar-nav a.active { background: rgba(255,255,255,0.12); color: white; font-weight: 600; }
-
         .sidebar-nav .nav-section {
             font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
             color: rgba(255,255,255,0.3); padding: 16px 14px 6px; font-weight: 600;
+        }
+
+        /* Selector de idioma en sidebar */
+        .sidebar-lang {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+        .sidebar-lang button {
+            padding: 4px 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            background: transparent;
+            color: rgba(255,255,255,0.6);
+            transition: var(--transition);
+        }
+        .sidebar-lang button:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .sidebar-lang button.active {
+            background: var(--green-medium);
+            color: white;
+            border-color: var(--green-medium);
         }
 
         .sidebar-footer {
@@ -77,21 +105,16 @@
 
         /* Contenido principal */
         .main-content { margin-left: var(--sidebar-w); padding: 32px; min-height: 100vh; }
-
         .page-header { margin-bottom: 28px; }
         .page-header h1 { font-family: var(--font-heading); font-weight: 700; font-size: 24px; color: var(--gray-900); }
         .page-header p { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
 
-        /* Tarjetas de estadísticas */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
         .stat-card {
             background: var(--white); border-radius: var(--radius-md); padding: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 16px;
         }
-        .stat-card-icon {
-            width: 48px; height: 48px; border-radius: var(--radius-sm);
-            display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
-        }
+        .stat-card-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
         .stat-card-icon.yellow { background: #fffbeb; color: #d69e2e; }
         .stat-card-icon.blue { background: #ebf8ff; color: #3182ce; }
         .stat-card-icon.green { background: var(--green-pale); color: var(--green-medium); }
@@ -99,122 +122,71 @@
         .stat-card-value { font-family: var(--font-heading); font-weight: 700; font-size: 28px; color: var(--gray-900); }
         .stat-card-label { font-size: 13px; color: var(--gray-500); }
 
-        /* Tabla */
-        .table-card {
-            background: var(--white); border-radius: var(--radius-md);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden;
-        }
-        .table-card-header {
-            padding: 18px 24px; border-bottom: 1px solid var(--gray-200);
-            display: flex; align-items: center; justify-content: space-between;
-        }
+        .table-card { background: var(--white); border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+        .table-card-header { padding: 18px 24px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; }
         .table-card-header h2 { font-family: var(--font-heading); font-weight: 700; font-size: 16px; color: var(--gray-900); }
         table { width: 100%; border-collapse: collapse; }
-        thead th {
-            text-align: left; padding: 12px 24px; font-size: 11px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-500);
-            background: var(--gray-100); border-bottom: 1px solid var(--gray-200);
-        }
+        thead th { text-align: left; padding: 12px 24px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-500); background: var(--gray-100); border-bottom: 1px solid var(--gray-200); }
         tbody td { padding: 14px 24px; font-size: 14px; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); }
         tbody tr:hover { background: var(--gray-100); }
         tbody tr:last-child td { border-bottom: none; }
 
-        /* Badges de estado */
-        .badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600;
-        }
-        .badge-pendiente { background: #fffbeb; color: #b7791f; }
+        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; }
+        .badge-pendiente_validacion, .badge-pendiente { background: #fffbeb; color: #b7791f; }
         .badge-en_proceso { background: #ebf8ff; color: #2b6cb0; }
+        .badge-resolucion_propuesta { background: #f0fff4; color: #276749; }
         .badge-resuelto { background: var(--green-pale); color: var(--green-dark); }
         .badge-cerrado { background: var(--gray-100); color: var(--gray-600); }
+        .badge-rechazado { background: #fff5f5; color: #c53030; }
         .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
-        .badge-pendiente .badge-dot { background: #d69e2e; }
+        .badge-pendiente_validacion .badge-dot, .badge-pendiente .badge-dot { background: #d69e2e; }
         .badge-en_proceso .badge-dot { background: #3182ce; }
+        .badge-resolucion_propuesta .badge-dot { background: #38a169; }
         .badge-resuelto .badge-dot { background: var(--green-medium); }
         .badge-cerrado .badge-dot { background: var(--gray-400); }
+        .badge-rechazado .badge-dot { background: #c53030; }
 
-        /* Botones */
-        .btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 20px; font-family: var(--font-heading); font-weight: 600;
-            font-size: 13px; border: none; border-radius: var(--radius-sm);
-            cursor: pointer; text-decoration: none; transition: var(--transition);
-        }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-family: var(--font-heading); font-weight: 600; font-size: 13px; border: none; border-radius: var(--radius-sm); cursor: pointer; text-decoration: none; transition: var(--transition); }
         .btn-primary { background: var(--green-dark); color: white; }
         .btn-primary:hover { background: var(--green-medium); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,60,52,0.25); }
         .btn-secondary { background: var(--gray-100); color: var(--gray-700); }
         .btn-secondary:hover { background: var(--gray-200); }
         .btn-sm { padding: 6px 14px; font-size: 12px; }
 
-        /* Formulario en panel */
-        .form-panel {
-            background: var(--white); border-radius: var(--radius-md);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 28px; max-width: 720px;
-        }
+        .form-panel { background: var(--white); border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 28px; max-width: 720px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
         .form-row.full { grid-template-columns: 1fr; }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group label { font-family: var(--font-heading); font-weight: 600; font-size: 13px; color: var(--gray-700); }
-        .form-input {
-            padding: 10px 14px; font-family: var(--font-body); font-size: 14px;
-            color: var(--gray-900); background: var(--gray-100); border: 1.5px solid var(--gray-200);
-            border-radius: var(--radius-sm); transition: var(--transition);
-        }
+        .form-input { padding: 10px 14px; font-family: var(--font-body); font-size: 14px; color: var(--gray-900); background: var(--gray-100); border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); transition: var(--transition); }
         .form-input:focus { outline: none; border-color: var(--green-medium); background: var(--white); box-shadow: 0 0 0 3px rgba(45,106,90,0.1); }
         textarea.form-input { resize: vertical; min-height: 100px; }
         .errorlist { list-style: none; padding: 0; }
         .errorlist li { font-size: 12px; color: #c53030; }
 
-        /* Alertas */
-        .alert {
-            padding: 14px 18px; border-radius: var(--radius-sm); font-size: 13px;
-            display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
-        }
+        .alert { padding: 14px 18px; border-radius: var(--radius-sm); font-size: 13px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
         .alert-success { background: #f0fff4; border: 1px solid #c6f6d5; color: #276749; }
         .alert-error { background: #fff5f5; border: 1px solid #fed7d7; color: #c53030; }
         .alert-info { background: #ebf8ff; border: 1px solid #bee3f8; color: #2b6cb0; }
 
-        /* Timeline de respuestas */
         .timeline { padding: 0; list-style: none; margin-top: 20px; }
         .timeline-item { display: flex; gap: 16px; padding-bottom: 24px; position: relative; }
-        .timeline-item:not(:last-child)::after {
-            content: ''; position: absolute; left: 18px; top: 40px; bottom: 0;
-            width: 2px; background: var(--gray-200);
-        }
-        .timeline-avatar {
-            width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 13px; color: white;
-        }
+        .timeline-item:not(:last-child)::after { content: ''; position: absolute; left: 18px; top: 40px; bottom: 0; width: 2px; background: var(--gray-200); }
+        .timeline-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: white; }
         .timeline-avatar.client { background: var(--green-medium); }
         .timeline-avatar.secretaria { background: var(--rose); }
         .timeline-body { flex: 1; }
         .timeline-meta { font-size: 12px; color: var(--gray-500); margin-bottom: 4px; }
         .timeline-meta strong { color: var(--gray-700); }
-        .timeline-msg {
-            background: var(--gray-100); padding: 12px 16px; border-radius: var(--radius-sm);
-            font-size: 14px; color: var(--gray-800); line-height: 1.6;
-        }
+        .timeline-msg { background: var(--gray-100); padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px; color: var(--gray-800); line-height: 1.6; }
 
-        /* Evidencias */
         .evidencias-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
-        .evidencia-thumb {
-            width: 100px; height: 100px; border-radius: var(--radius-sm); overflow: hidden;
-            border: 2px solid var(--gray-200); cursor: pointer; transition: var(--transition);
-        }
+        .evidencia-thumb { width: 100px; height: 100px; border-radius: var(--radius-sm); overflow: hidden; border: 2px solid var(--gray-200); cursor: pointer; transition: var(--transition); }
         .evidencia-thumb:hover { border-color: var(--green-medium); transform: scale(1.05); }
         .evidencia-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Hamburger para móvil */
-        .mobile-header {
-            display: none; position: fixed; top: 0; left: 0; right: 0;
-            background: var(--green-dark); padding: 14px 20px; z-index: 101;
-            align-items: center; justify-content: space-between;
-        }
-        .hamburger {
-            background: none; border: none; color: white; font-size: 22px; cursor: pointer; padding: 4px;
-        }
+        .mobile-header { display: none; position: fixed; top: 0; left: 0; right: 0; background: var(--green-dark); padding: 14px 20px; z-index: 101; align-items: center; justify-content: space-between; }
+        .hamburger { background: none; border: none; color: white; font-size: 22px; cursor: pointer; padding: 4px; }
         .mobile-header .mobile-logo { color: white; font-family: var(--font-heading); font-weight: 700; font-size: 16px; }
         .mobile-header .mobile-logo span { font-weight: 400; opacity: 0.7; }
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
@@ -235,7 +207,6 @@
 </head>
 <body>
 
-    <!-- Header móvil -->
     <div class="mobile-header">
         <button class="hamburger" id="hamburgerBtn" aria-label="Menú"><i class="fas fa-bars"></i></button>
         <div class="mobile-logo">Alexandra <span>Farms</span></div>
@@ -243,7 +214,6 @@
     </div>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <a href="#">Alexandra <span>Farms</span></a>
@@ -251,6 +221,16 @@
         <nav class="sidebar-nav">
             {% block sidebar_nav %}{% endblock %}
         </nav>
+
+        <!-- SELECTOR DE IDIOMA EN SIDEBAR -->
+        {% if perfil.role == 'cliente_comprador' %}
+        <div class="sidebar-lang">
+            <button data-lang="es" onclick="setLanguage('es')">ES</button>
+            <button data-lang="en" onclick="setLanguage('en')">EN</button>
+            <button data-lang="ru" onclick="setLanguage('ru')">RU</button>
+        </div>
+        {% endif %}
+
         <div class="sidebar-footer">
             <div class="sidebar-user">
                 <div class="sidebar-avatar">{{ request.user.first_name.0 }}{{ request.user.last_name.0 }}</div>
@@ -261,19 +241,20 @@
                         {% elif perfil.role == 'empleado' %}{{ perfil.get_departamento_display }}
                         {% endif %}
                     </div>
-                    
                 </div>
                 <a href="{% url 'logout' %}" class="sidebar-logout" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></a>
             </div>
         </div>
     </aside>
 
-    <!-- Contenido -->
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
 
     <script>
+        // ==========================================
+        // HAMBURGER MENU
+        // ==========================================
         const hamburger = document.getElementById('hamburgerBtn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -281,6 +262,153 @@
             hamburger.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
             overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
         }
+
+        // ==========================================
+        // SISTEMA DE IDIOMAS GLOBAL
+        // ==========================================
+       const globalTranslations = {
+    es: {
+        // Dashboard
+        titulo_dashboard: "Dashboard",
+        bienvenido: "Bienvenido",
+        reclamo_creado: "Su reclamo ha sido registrado exitosamente.",
+        pendientes: "Pendientes",
+        en_proceso: "En proceso",
+        resueltos: "Resueltos",
+        total: "Total reclamos",
+        mis_reclamos: "Mis Reclamos",
+        nuevo: "Nuevo",
+        menu_dashboard: "Dashboard",
+        menu_nuevo_reclamo: "Nuevo Reclamo",
+        col_numero: "Número",
+        col_cargamento: "Cargamento",
+        col_problema: "Problema",
+        col_fecha: "Fecha",
+        col_estado: "Estado",
+        ver: "Ver",
+        sin_reclamos: "No tiene reclamos registrados.",
+        crear_primero: "Crear primer reclamo",
+        btn_enviar: "Enviar Reclamo",
+        btn_cancelar: "Cancelar",
+        historial: "Historial de Comunicación",
+        responder: "Responder",
+        btn_responder: "Enviar Respuesta",
+        volver: "Volver al Dashboard",
+        // ← NUEVAS CLAVES DETALLE RECLAMO
+        guia_master_label: "Guía Master",
+        despacho_label: "Despacho",
+        accion_correcta: "Acción realizada correctamente.",
+        info_reclamo: "Información del reclamo",
+        label_variedad: "Variedad:",
+        label_tipo: "Tipo de problema:",
+        label_cliente: "Cliente:",
+        label_empresa: "Empresa:",
+        label_pais: "País:",
+        desc_evidencia: "Descripción y Evidencia",
+        label_evidencia: "Evidencia",
+        mensajes_publicos: "mensaje(s) público(s)",
+        label_cliente_rol: "Cliente",
+    },
+    en: {
+        titulo_dashboard: "Dashboard",
+        bienvenido: "Welcome",
+        reclamo_creado: "Your claim has been successfully registered.",
+        pendientes: "Pending",
+        en_proceso: "In progress",
+        resueltos: "Resolved",
+        total: "Total claims",
+        mis_reclamos: "My Claims",
+        nuevo: "New",
+        menu_dashboard: "Dashboard",
+        menu_nuevo_reclamo: "New Claim",
+        col_numero: "Number",
+        col_cargamento: "Shipment",
+        col_problema: "Problem",
+        col_fecha: "Date",
+        col_estado: "Status",
+        ver: "View",
+        sin_reclamos: "You have no registered claims.",
+        crear_primero: "Create first claim",
+        btn_enviar: "Submit Claim",
+        btn_cancelar: "Cancel",
+        historial: "Communication History",
+        responder: "Reply",
+        btn_responder: "Send Reply",
+        volver: "Back to Dashboard",
+        // ← NUEVAS CLAVES DETALLE RECLAMO
+        guia_master_label: "Master Airway Bill",
+        despacho_label: "Dispatch",
+        accion_correcta: "Action completed successfully.",
+        info_reclamo: "Claim information",
+        label_variedad: "Variety:",
+        label_tipo: "Problem type:",
+        label_cliente: "Client:",
+        label_empresa: "Company:",
+        label_pais: "Country:",
+        desc_evidencia: "Description and Evidence",
+        label_evidencia: "Evidence",
+        mensajes_publicos: "public message(s)",
+        label_cliente_rol: "Client",
+    },
+    ru: {
+        titulo_dashboard: "Панель управления",
+        bienvenido: "Добро пожаловать",
+        reclamo_creado: "Ваша претензия успешно зарегистрирована.",
+        pendientes: "Ожидающие",
+        en_proceso: "В процессе",
+        resueltos: "Решённые",
+        total: "Всего претензий",
+        mis_reclamos: "Мои претензии",
+        nuevo: "Новый",
+        menu_dashboard: "Панель управления",
+        menu_nuevo_reclamo: "Новая претензия",
+        col_numero: "Номер",
+        col_cargamento: "Груз",
+        col_problema: "Проблема",
+        col_fecha: "Дата",
+        col_estado: "Статус",
+        ver: "Просмотр",
+        sin_reclamos: "У вас нет зарегистрированных претензий.",
+        crear_primero: "Создать первую претензию",
+        btn_enviar: "Отправить претензию",
+        btn_cancelar: "Отмена",
+        historial: "История общения",
+        responder: "Ответить",
+        btn_responder: "Отправить ответ",
+        volver: "Вернуться на панель",
+        // ← NUEVAS CLAVES DETALLE RECLAMO
+        guia_master_label: "Главная авианакладная",
+        despacho_label: "Отправка",
+        accion_correcta: "Действие выполнено успешно.",
+        info_reclamo: "Информация о претензии",
+        label_variedad: "Сорт:",
+        label_tipo: "Тип проблемы:",
+        label_cliente: "Клиент:",
+        label_empresa: "Компания:",
+        label_pais: "Страна:",
+        desc_evidencia: "Описание и доказательства",
+        label_evidencia: "Доказательства",
+        mensajes_publicos: "публичных сообщений",
+        label_cliente_rol: "Клиент",
+    }
+};
+        function setLanguage(lang) {
+            if (!globalTranslations[lang]) return;
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.dataset.translate;
+                if (globalTranslations[lang][key]) {
+                    el.textContent = globalTranslations[lang][key];
+                }
+            });
+            document.querySelectorAll('.sidebar-lang button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            localStorage.setItem('dashboardLang', lang);
+        }
+
+        // Cargar idioma guardado automáticamente
+        const savedLang = localStorage.getItem('dashboardLang') || 'es';
+        setLanguage(savedLang);
     </script>
     {% block extra_js %}{% endblock %}
 </body>

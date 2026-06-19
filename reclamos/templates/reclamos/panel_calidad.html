@@ -8,63 +8,110 @@
 {% endblock %}
 
 {% block content %}
-    <div class="dashboard-container">
-        <main class="main-content" style="margin: 20px;">
-            
-            <h1><i class="fas fa-clipboard-check"></i> Reclamos Pendientes de Validación</h1>
-            
-            <!-- KPI Cards -->
-            <section class="kpis" style="margin-bottom: 20px;">
-                <div class="kpi-card" style="background: #fff3cd; border-left: 5px solid #ffc107;">
-                    <i class="fas fa-hourglass-half" style="color: #ffc107;"></i>
-                    <div class="kpi-info">
-                        <h3>En espera de revisión</h3>
-                        <p style="font-size: 2rem; font-weight: bold;">{{ en_calidad_count }}</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TABLA DE RECLAMOS REALES -->
-            <section class="card">
-                <div class="table-container">
-                    <table class="table" style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
-                            <tr>
-                                <th style="padding: 10px;">Número</th>
-                                <th style="padding: 10px;">Cliente</th>
-                                <th style="padding: 10px;">Tipo de Problema</th>
-                                <th style="padding: 10px;">Variedad</th>
-                                <th style="padding: 10px;">Fecha</th>
-                                <th style="padding: 10px;">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for reclamo in reclamos %}
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 10px;"><strong>{{ reclamo.numero }}</strong></td>
-                                <td style="padding: 10px;">{{ reclamo.cliente.company_name }}</td>
-                                <td style="padding: 10px;">{{ reclamo.tipo_problema }}</td>
-                                <td style="padding: 10px;">{{ reclamo.variedad_rosa }}</td>
-                                <td style="padding: 10px;">{{ reclamo.created_at|date:"d/m/Y H:i" }}</td>
-                                <td style="padding: 10px;">
-                                    <a href="{% url 'detalle_reclamo' reclamo.pk %}" class="btn btn-primary" style="padding: 5px 10px; text-decoration: none; background: #28a745; color: white; border-radius: 4px;">
-                                        <i class="fas fa-search"></i> Revisar y Asignar
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="6" style="padding: 20px; text-align: center; color: #6c757d;">
-                                    <i class="fas fa-check-circle" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
-                                    No hay reclamos pendientes en este momento. ¡Buen trabajo!
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-        </main>
+    <div class="page-header">
+        <h1><i class="fas fa-clipboard-check"></i> Panel de Control de Calidad</h1>
+        <p>Gestión y seguimiento de reclamos.</p>
     </div>
-{% endblock content %}
+
+    <!-- KPI Cards -->
+    <div class="stats-grid" style="margin-bottom: 28px;">
+        <div class="stat-card">
+            <div class="stat-card-icon yellow"><i class="fas fa-hourglass-half"></i></div>
+            <div>
+                <div class="stat-card-value">{{ en_calidad_count }}</div>
+                <div class="stat-card-label">Pendientes de validación</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon blue"><i class="fas fa-tasks"></i></div>
+            <div>
+                <div class="stat-card-value">{{ por_resolver_count }}</div>
+                <div class="stat-card-label">Listos para resolver</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLA 1: PENDIENTES DE VALIDACIÓN -->
+    <div class="table-card" style="margin-bottom: 28px;">
+        <div class="table-card-header">
+            <h2><i class="fas fa-hourglass-half" style="color:#ffc107;"></i> Pendientes de Validación</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Tipo de Problema</th>
+                    <th>Variedad</th>
+                    <th>Fecha</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reclamo in reclamos %}
+                <tr>
+                    <td><strong>{{ reclamo.numero }}</strong></td>
+                    <td>{{ reclamo.cliente.company_name }}</td>
+                    <td>{{ reclamo.tipo_problema }}</td>
+                    <td>{{ reclamo.variedad_rosa }}</td>
+                    <td>{{ reclamo.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'detalle_reclamo' reclamo.pk %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-search"></i> Revisar y Asignar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align:center;padding:40px;color:var(--gray-500);">
+                        <i class="fas fa-check-circle" style="font-size:2rem;display:block;margin-bottom:10px;color:var(--green-medium);"></i>
+                        No hay reclamos pendientes. ¡Buen trabajo!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- TABLA 2: LISTOS PARA RESOLVER -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h2><i class="fas fa-check-double" style="color:#2d6a5a;"></i> Listos para Marcar como Resueltos</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Tipo de Problema</th>
+                    <th>Variedad</th>
+                    <th>Fecha</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reclamo in reclamos_por_resolver %}
+                <tr>
+                    <td><strong>{{ reclamo.numero }}</strong></td>
+                    <td>{{ reclamo.cliente.company_name }}</td>
+                    <td>{{ reclamo.tipo_problema }}</td>
+                    <td>{{ reclamo.variedad_rosa }}</td>
+                    <td>{{ reclamo.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'detalle_reclamo' reclamo.pk %}" class="btn btn-sm" style="background:#2d6a5a;color:white;">
+                            <i class="fas fa-check-circle"></i> Ver y Resolver
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align:center;padding:40px;color:var(--gray-500);">
+                        <i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
+                        No hay reclamos listos para resolver.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

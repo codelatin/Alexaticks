@@ -23,4 +23,6 @@ urlpatterns = [
     # RUTA DE SUPERADMIN
     # ==========================================
     path('gerencia/', views.panel_gerencia, name='panel_gerencia'),
+    path('gerencia/exportar/excel/', views.exportar_excel, name='exportar_excel'),
+    path('gerencia/exportar/pdf/', views.exportar_pdf, name='exportar_pdf'),
 ]

@@ -5,19 +5,28 @@
 {% block sidebar_nav %}
     <div class="nav-section">Menú</div>
     <a href="{% url 'dashboard_cliente' %}" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
-    <a href="{% url 'crear_reclamo' %}"><i class="fas fa-plus-circle"></i> Nuevo Reclamo</a>
+    <a href="{% url 'crear_reclamo' %}"><i class="fas fa-plus-circle"></i> <span data-translate="menu_nuevo_reclamo">Nuevo Reclamo</span></a>
 {% endblock %}
 
 {% block content %}
+    <!-- SELECTOR DE IDIOMA -->
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+        <div class="language-switcher" style="display:flex;gap:6px;">
+            <button data-lang="es" onclick="setLanguage('es')" style="padding:4px 10px;border:1px solid var(--gray-300);border-radius:4px;cursor:pointer;font-weight:600;background:white;">ES</button>
+            <button data-lang="en" onclick="setLanguage('en')" style="padding:4px 10px;border:1px solid var(--gray-300);border-radius:4px;cursor:pointer;font-weight:600;background:white;">EN</button>
+            <button data-lang="ru" onclick="setLanguage('ru')" style="padding:4px 10px;border:1px solid var(--gray-300);border-radius:4px;cursor:pointer;font-weight:600;background:white;">RU</button>
+        </div>
+    </div>
+
     <div class="page-header">
-        <h1>Dashboard</h1>
-        <p>Bienvenido, {{ request.user.get_full_name }} — {{ perfil.company_name }}</p>
+        <h1 data-translate="titulo">Dashboard</h1>
+        <p><span data-translate="bienvenido">Bienvenido</span>, {{ request.user.get_full_name }} — {{ perfil.company_name }}</p>
     </div>
 
     {% if messages %}
         {% for message in messages %}
             {% if message.message == 'reclamo_creado' %}
-                <div class="alert alert-success"><i class="fas fa-check-circle"></i> Su reclamo ha sido registrado exitosamente.</div>
+                <div class="alert alert-success"><i class="fas fa-check-circle"></i> <span data-translate="reclamo_creado">Su reclamo ha sido registrado exitosamente.</span></div>
             {% endif %}
         {% endfor %}
     {% endif %}
@@ -25,36 +34,36 @@
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-card-icon yellow"><i class="fas fa-clock"></i></div>
-            <div><div class="stat-card-value">{{ pendientes }}</div><div class="stat-card-label">Pendientes</div></div>
+            <div><div class="stat-card-value">{{ pendientes }}</div><div class="stat-card-label" data-translate="pendientes">Pendientes</div></div>
         </div>
         <div class="stat-card">
             <div class="stat-card-icon blue"><i class="fas fa-spinner"></i></div>
-            <div><div class="stat-card-value">{{ en_proceso }}</div><div class="stat-card-label">En proceso</div></div>
+            <div><div class="stat-card-value">{{ en_proceso }}</div><div class="stat-card-label" data-translate="en_proceso">En proceso</div></div>
         </div>
         <div class="stat-card">
             <div class="stat-card-icon green"><i class="fas fa-check-circle"></i></div>
-            <div><div class="stat-card-value">{{ resueltos }}</div><div class="stat-card-label">Resueltos</div></div>
+            <div><div class="stat-card-value">{{ resueltos }}</div><div class="stat-card-label" data-translate="resueltos">Resueltos</div></div>
         </div>
         <div class="stat-card">
             <div class="stat-card-icon rose"><i class="fas fa-file-alt"></i></div>
-            <div><div class="stat-card-value">{{ reclamos.count }}</div><div class="stat-card-label">Total reclamos</div></div>
+            <div><div class="stat-card-value">{{ reclamos.count }}</div><div class="stat-card-label" data-translate="total">Total reclamos</div></div>
         </div>
     </div>
 
     <div class="table-card">
         <div class="table-card-header">
-            <h2>Mis Reclamos</h2>
-            <a href="{% url 'crear_reclamo' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Nuevo</a>
+            <h2 data-translate="mis_reclamos">Mis Reclamos</h2>
+            <a href="{% url 'crear_reclamo' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> <span data-translate="nuevo">Nuevo</span></a>
         </div>
         {% if reclamos %}
         <table>
             <thead>
                 <tr>
-                    <th>Número</th>
-                    <th>Cargamento</th>
-                    <th>Problema</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
+                    <th data-translate="col_numero">Número</th>
+                    <th data-translate="col_cargamento">Cargamento</th>
+                    <th data-translate="col_problema">Problema</th>
+                    <th data-translate="col_fecha">Fecha</th>
+                    <th data-translate="col_estado">Estado</th>
                     <th></th>
                 </tr>
             </thead>
@@ -71,7 +80,7 @@
                             {{ r.get_estado_display }}
                         </span>
                     </td>
-                    <td><a href="{% url 'detalle_reclamo' r.pk %}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Ver</a></td>
+                    <td><a href="{% url 'detalle_reclamo' r.pk %}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> <span data-translate="ver">Ver</span></a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -79,9 +88,93 @@
         {% else %}
         <div style="padding:48px 24px;text-align:center;">
             <i class="fas fa-inbox" style="font-size:40px;color:var(--gray-300);margin-bottom:12px;display:block;"></i>
-            <p style="color:var(--gray-500);font-size:14px;">No tiene reclamos registrados.</p>
-            <a href="{% url 'crear_reclamo' %}" class="btn btn-primary" style="margin-top:16px;"><i class="fas fa-plus"></i> Crear primer reclamo</a>
+            <p style="color:var(--gray-500);font-size:14px;" data-translate="sin_reclamos">No tiene reclamos registrados.</p>
+            <a href="{% url 'crear_reclamo' %}" class="btn btn-primary" style="margin-top:16px;"><i class="fas fa-plus"></i> <span data-translate="crear_primero">Crear primer reclamo</span></a>
         </div>
         {% endif %}
     </div>
+
+<script>
+const translations = {
+    es: {
+        titulo: "Dashboard",
+        bienvenido: "Bienvenido",
+        reclamo_creado: "Su reclamo ha sido registrado exitosamente.",
+        pendientes: "Pendientes",
+        en_proceso: "En proceso",
+        resueltos: "Resueltos",
+        total: "Total reclamos",
+        mis_reclamos: "Mis Reclamos",
+        nuevo: "Nuevo",
+        menu_nuevo_reclamo: "Nuevo Reclamo",
+        col_numero: "Número",
+        col_cargamento: "Cargamento",
+        col_problema: "Problema",
+        col_fecha: "Fecha",
+        col_estado: "Estado",
+        ver: "Ver",
+        sin_reclamos: "No tiene reclamos registrados.",
+        crear_primero: "Crear primer reclamo"
+    },
+    en: {
+        titulo: "Dashboard",
+        bienvenido: "Welcome",
+        reclamo_creado: "Your claim has been successfully registered.",
+        pendientes: "Pending",
+        en_proceso: "In progress",
+        resueltos: "Resolved",
+        total: "Total claims",
+        mis_reclamos: "My Claims",
+        nuevo: "New",
+        menu_nuevo_reclamo: "New Claim",
+        col_numero: "Number",
+        col_cargamento: "Shipment",
+        col_problema: "Problem",
+        col_fecha: "Date",
+        col_estado: "Status",
+        ver: "View",
+        sin_reclamos: "You have no registered claims.",
+        crear_primero: "Create first claim"
+    },
+    ru: {
+        titulo: "Панель управления",
+        bienvenido: "Добро пожаловать",
+        reclamo_creado: "Ваша претензия успешно зарегистрирована.",
+        pendientes: "Ожидающие",
+        en_proceso: "В процессе",
+        resueltos: "Решённые",
+        total: "Всего претензий",
+        mis_reclamos: "Мои претензии",
+        nuevo: "Новый",
+        menu_nuevo_reclamo: "Новая претензия",
+        col_numero: "Номер",
+        col_cargamento: "Груз",
+        col_problema: "Проблема",
+        col_fecha: "Дата",
+        col_estado: "Статус",
+        ver: "Просмотр",
+        sin_reclamos: "У вас нет зарегистрированных претензий.",
+        crear_primero: "Создать первую претензию"
+    }
+};
+
+function setLanguage(lang) {
+    if (!translations[lang]) return;
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.dataset.translate;
+        if (translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
+    });
+    document.querySelectorAll('.language-switcher button').forEach(btn => {
+        btn.style.background = btn.dataset.lang === lang ? 'var(--green-medium)' : 'white';
+        btn.style.color = btn.dataset.lang === lang ? 'white' : 'inherit';
+    });
+    localStorage.setItem('dashboardLang', lang);
+}
+
+// Cargar idioma guardado
+const savedLang = localStorage.getItem('dashboardLang') || 'es';
+setLanguage(savedLang);
+</script>
 {% endblock %}

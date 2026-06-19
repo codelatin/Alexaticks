@@ -1,0 +1,38 @@
+ 
+[2026-06-17 18:12:01,348] WARNING Session data corrupted
+[2026-06-17 18:43:40,150] ERROR Internal Server Error: /reclamos/reclamo/5/
+Traceback (most recent call last):
+  File "C:\Users\Estudiante\Envs\Alexaticks\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Estudiante\Envs\Alexaticks\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Estudiante\Envs\Alexaticks\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Estudiante\Alexaticks\cuentas\views.py", line 47, in wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Estudiante\Alexaticks\reclamos\views.py", line 167, in detalle_reclamo
+    notificar_reclamo_resuelto(reclamo)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'notificar_reclamo_resuelto' is not defined. Did you mean: 'notificar_reclamo_creado'?
+[2026-06-17 18:43:50,425] ERROR Internal Server Error: /reclamos/reclamo/5/
+Traceback (most recent call last):
+  File "C:\Users\Estudiante\Envs\Alexaticks\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Estudiante\Envs\Alexaticks\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Estudiante\Envs\Alexaticks\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Estudiante\Alexaticks\cuentas\views.py", line 47, in wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Estudiante\Alexaticks\reclamos\views.py", line 167, in detalle_reclamo
+    notificar_reclamo_resuelto(reclamo)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'notificar_reclamo_resuelto' is not defined. Did you mean: 'notificar_reclamo_creado'?
