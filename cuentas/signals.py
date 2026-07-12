@@ -4,16 +4,22 @@ from django.contrib.auth.models import User
 
 
 @receiver(post_save, sender=User)
-def crear_perfil_vendedor_auto(sender, instance, created, **kwargs):
-    """
-    Cuando se crea un superusuario o staff desde el admin,
-    automáticamente se le crea un perfil de vendedor.
-    Los clientes se crean desde la vista registrar_cliente_view.
-    """
-    if created and (instance.is_superuser or instance.is_staff):
+def crear_perfil_automatico(sender, instance, created, **kwargs):
+    if created:
         from .models import Perfil
         if not hasattr(instance, 'perfil'):
-            Perfil.objects.create(
-                user=instance,
-                role='vendedor'
-            )
+            # Superusuarios y staff → empleado gerencia
+            if instance.is_superuser or instance.is_staff:
+                Perfil.objects.create(
+                    user=instance,
+                    role='empleado',
+                    departamento='gerencia',
+                    preferred_language='es'
+                )
+            else:
+                # Usuarios normales → cliente comprador
+                Perfil.objects.create(
+                    user=instance,
+                    role='cliente_comprador',
+                    preferred_language='es'
+                )

@@ -1,0 +1,117 @@
+{% extends 'reclamos/base_panel.html' %}
+
+{% block title %}Crear Usuario — Alexandra Farms{% endblock %}
+
+{% block sidebar_nav %}
+    <div class="nav-section">Gerencia</div>
+    <a href="{% url 'panel_gerencia' %}"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <a href="{% url 'lista_usuarios' %}"><i class="fas fa-users"></i> Usuarios</a>
+    <a href="{% url 'crear_usuario' %}" class="active"><i class="fas fa-user-plus"></i> Crear Usuario</a>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1><i class="fas fa-user-plus"></i> Crear Nuevo Usuario</h1>
+        <p>Crea clientes o empleados para el sistema.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                <i class="fas fa-{% if message.tags == 'error' %}times{% else %}check{% endif %}-circle"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="form-panel">
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" name="first_name" class="form-input" required placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <label>Apellido</label>
+                    <input type="text" name="last_name" class="form-input" required placeholder="Apellido">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre de usuario</label>
+                    <input type="text" name="username" class="form-input" required placeholder="username">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-input" required placeholder="correo@ejemplo.com">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" class="form-input" required placeholder="Contraseña">
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select name="role" class="form-input" required onchange="toggleCampos(this.value)">
+                        <option value="">-- Seleccionar --</option>
+                        <option value="cliente_comprador">Cliente</option>
+                        <option value="empleado">Empleado</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Campos para CLIENTE -->
+            <div id="campos-cliente" style="display:none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Empresa</label>
+                        <input type="text" name="company_name" class="form-input" placeholder="Nombre de la empresa">
+                    </div>
+                    <div class="form-group">
+                        <label>País</label>
+                        <input type="text" name="country" class="form-input" placeholder="País">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campos para EMPLEADO -->
+            <div id="campos-empleado" style="display:none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Departamento</label>
+                        <select name="departamento" class="form-input">
+                            <option value="">-- Seleccionar --</option>
+                            <option value="calidad">Control de Calidad</option>
+                            <option value="poscosecha">Poscosecha</option>
+                            <option value="produccion">Producción</option>
+                            <option value="exportaciones">Exportaciones</option>
+                            <option value="ventas">Ventas</option>
+                            <option value="gerencia">Gerencia</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:8px;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Crear Usuario
+                </button>
+                <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+<script>
+function toggleCampos(rol) {
+    document.getElementById('campos-cliente').style.display = rol === 'cliente_comprador' ? 'block' : 'none';
+    document.getElementById('campos-empleado').style.display = rol === 'empleado' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

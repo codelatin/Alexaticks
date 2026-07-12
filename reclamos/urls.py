@@ -25,4 +25,8 @@ urlpatterns = [
     path('gerencia/', views.panel_gerencia, name='panel_gerencia'),
     path('gerencia/exportar/excel/', views.exportar_excel, name='exportar_excel'),
     path('gerencia/exportar/pdf/', views.exportar_pdf, name='exportar_pdf'),
+    path('gerencia/crear-usuario/', views.crear_usuario, name='crear_usuario'),  # ← NUEVA
+    path('gerencia/usuarios/', views.lista_usuarios, name='lista_usuarios'), 
+    path('gerencia/usuario/<int:pk>/editar/', views.editar_usuario, name='editar_usuario'),
+    path('gerencia/usuario/<int:pk>/eliminar/', views.eliminar_usuario, name='eliminar_usuario'),
 ]

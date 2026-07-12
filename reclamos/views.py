@@ -356,42 +356,7 @@ def panel_exportaciones(request):
     })
 
 
-# =============================================
-# PANEL GERENCIA
-# =============================================
-@login_required
-def panel_gerencia(request):
-    if not request.user.is_superuser:
-        return redirect('login')
 
-    reclamos = Reclamo.objects.select_related(
-        'cliente__user', 'inspector_calidad__user', 'tipo_problema'
-    ).prefetch_related('areas_asignadas__responsable__user').order_by('-created_at')
-
-    total_reclamos = reclamos.count()
-    pendientes_calidad = reclamos.filter(estado='pendiente_validacion').count()
-    resueltos = reclamos.filter(estado__in=['resuelto', 'cerrado']).count()
-
-    estados_data = Reclamo.objects.values('estado').annotate(total=Count('id'))
-    estados_labels = [item['estado'].replace('_', ' ').title() for item in estados_data]
-    estados_counts = [item['total'] for item in estados_data]
-
-    areas_data = AsignacionArea.objects.values('departamento').annotate(total=Count('reclamo', distinct=True))
-    areas_labels = [item['departamento'] for item in areas_data]
-    areas_counts = [item['total'] for item in areas_data]
-
-    return render(request, 'reclamos/panel_gerencia.html', {
-        'reclamos': reclamos,
-        'total_reclamos': total_reclamos,
-        'pendientes_calidad': pendientes_calidad,
-        'resueltos': resueltos,
-        'estados_labels': json.dumps(estados_labels),
-        'estados_counts': json.dumps(estados_counts),
-        'areas_labels': json.dumps(areas_labels),
-        'areas_counts': json.dumps(areas_counts),
-    })
-
-from django.db.models import Avg, F, ExpressionWrapper, DurationField
 @login_required
 def panel_gerencia(request):
     if not request.user.is_superuser:
@@ -694,3 +659,143 @@ def exportar_pdf(request):
     elementos.append(tabla)
     doc.build(elementos)
     return response
+
+# ==========================================
+# CREAR USUARIO (GERENCIA)
+# ==========================================
+@login_required
+def crear_usuario(request):
+    if not request.user.is_superuser:
+        return redirect('login')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        role = request.POST.get('role')
+        departamento = request.POST.get('departamento', '')
+        company_name = request.POST.get('company_name', '')
+        country = request.POST.get('country', '')
+
+        from django.contrib.auth.models import User
+        from cuentas.models import Perfil
+
+        try:
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'El nombre de usuario ya existe.')
+                return redirect('crear_usuario')
+
+            if User.objects.filter(email=email).exists():
+                messages.error(request, 'El email ya está registrado.')
+                return redirect('crear_usuario')
+
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
+
+            # Actualizar perfil creado por la señal
+            perfil = user.perfil
+            perfil.role = role
+            perfil.company_name = company_name
+            perfil.country = country
+            if role == 'empleado' and departamento:
+                perfil.departamento = departamento
+            perfil.save()
+
+            messages.success(request, f'Usuario {username} creado correctamente.')
+            return redirect('lista_usuarios')
+
+        except Exception as e:
+            messages.error(request, f'Error al crear usuario: {e}')
+            return redirect('crear_usuario')
+
+    return render(request, 'reclamos/crear_usuario.html')
+
+
+# ==========================================
+# LISTA DE USUARIOS (GERENCIA)
+# ==========================================
+@login_required
+def lista_usuarios(request):
+    if not request.user.is_superuser:
+        return redirect('login')
+
+    from cuentas.models import Perfil
+    clientes = Perfil.objects.filter(role='cliente_comprador').select_related('user')
+    empleados = Perfil.objects.filter(role='empleado').select_related('user')
+
+    return render(request, 'reclamos/lista_usuarios.html', {
+        'clientes': clientes,
+        'empleados': empleados,
+    })
+
+
+# ==========================================
+# EDITAR USUARIO (GERENCIA)
+# ==========================================
+@login_required
+def editar_usuario(request, pk):
+    if not request.user.is_superuser:
+        return redirect('login')
+
+    from django.contrib.auth.models import User as AuthUser
+    from cuentas.models import Perfil as PerfilCuenta
+
+    user = get_object_or_404(AuthUser, pk=pk)
+    perfil = user.perfil
+
+    if request.method == 'POST':
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
+        user.email = request.POST.get('email', user.email)
+        user.is_active = request.POST.get('is_active') == 'on'
+        user.save()
+
+        perfil.company_name = request.POST.get('company_name', perfil.company_name)
+        perfil.country = request.POST.get('country', perfil.country)
+        departamento = request.POST.get('departamento', '')
+        if departamento:
+            perfil.departamento = departamento
+        perfil.save()
+
+        # Cambiar contraseña si se proporcionó
+        nueva_password = request.POST.get('nueva_password', '')
+        if nueva_password:
+            user.set_password(nueva_password)
+            user.save()
+
+        messages.success(request, f'Usuario {user.username} actualizado correctamente.')
+        return redirect('lista_usuarios')
+
+    return render(request, 'reclamos/editar_usuario.html', {
+        'usuario': user,
+        'perfil': perfil,
+    })
+
+
+# ==========================================
+# ELIMINAR USUARIO (GERENCIA)
+# ==========================================
+@login_required
+def eliminar_usuario(request, pk):
+    if not request.user.is_superuser:
+        return redirect('login')
+
+    from django.contrib.auth.models import User as AuthUser
+    user = get_object_or_404(AuthUser, pk=pk)
+
+    if request.method == 'POST':
+        username = user.username
+        user.delete()
+        messages.success(request, f'Usuario {username} eliminado correctamente.')
+        return redirect('lista_usuarios')
+
+    return render(request, 'reclamos/confirmar_eliminar_usuario.html', {
+        'usuario': user,
+    })

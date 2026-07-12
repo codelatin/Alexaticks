@@ -1,0 +1,100 @@
+{% extends 'reclamos/base_panel.html' %}
+
+{% block title %}Editar Usuario — Alexandra Farms{% endblock %}
+
+{% block sidebar_nav %}
+    <div class="nav-section">Gerencia</div>
+    <a href="{% url 'panel_gerencia' %}"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <a href="{% url 'lista_usuarios' %}" class="active"><i class="fas fa-users"></i> Usuarios</a>
+    <a href="{% url 'crear_usuario' %}"><i class="fas fa-user-plus"></i> Crear Usuario</a>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1><i class="fas fa-user-edit"></i> Editar Usuario</h1>
+        <p>Modifica los datos de {{ usuario.get_full_name }}</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                <i class="fas fa-check-circle"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="form-panel">
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" name="first_name" class="form-input" value="{{ usuario.first_name }}">
+                </div>
+                <div class="form-group">
+                    <label>Apellido</label>
+                    <input type="text" name="last_name" class="form-input" value="{{ usuario.last_name }}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-input" value="{{ usuario.email }}">
+                </div>
+                <div class="form-group">
+                    <label>Nueva Contraseña <small style="color:var(--gray-500);">(dejar vacío para no cambiar)</small></label>
+                    <input type="password" name="nueva_password" class="form-input" placeholder="Nueva contraseña">
+                </div>
+            </div>
+
+            {% if perfil.role == 'cliente_comprador' %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Empresa</label>
+                    <input type="text" name="company_name" class="form-input" value="{{ perfil.company_name }}">
+                </div>
+                <div class="form-group">
+                    <label>País</label>
+                    <input type="text" name="country" class="form-input" value="{{ perfil.country }}">
+                </div>
+            </div>
+            {% endif %}
+
+            {% if perfil.role == 'empleado' %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Departamento</label>
+                    <select name="departamento" class="form-input">
+                        <option value="calidad" {% if perfil.departamento == 'calidad' %}selected{% endif %}>Control de Calidad</option>
+                        <option value="poscosecha" {% if perfil.departamento == 'poscosecha' %}selected{% endif %}>Poscosecha</option>
+                        <option value="produccion" {% if perfil.departamento == 'produccion' %}selected{% endif %}>Producción</option>
+                        <option value="exportaciones" {% if perfil.departamento == 'exportaciones' %}selected{% endif %}>Exportaciones</option>
+                        <option value="ventas" {% if perfil.departamento == 'ventas' %}selected{% endif %}>Ventas</option>
+                        <option value="gerencia" {% if perfil.departamento == 'gerencia' %}selected{% endif %}>Gerencia</option>
+                    </select>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="is_active" {% if usuario.is_active %}checked{% endif %}>
+                        Usuario activo
+                    </label>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:8px;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+                <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

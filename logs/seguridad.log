@@ -36,3 +36,7 @@ Traceback (most recent call last):
     notificar_reclamo_resuelto(reclamo)
     ^^^^^^^^^^^^^^^^^^^^^^^^^^
 NameError: name 'notificar_reclamo_resuelto' is not defined. Did you mean: 'notificar_reclamo_creado'?
+[2026-07-11 21:42:27,286] WARNING Forbidden (CSRF token from POST incorrect.): /cuentas/login/
+[2026-07-11 21:42:31,133] WARNING Forbidden (CSRF token from POST incorrect.): /cuentas/login/
+[2026-07-11 21:43:51,937] WARNING Forbidden (CSRF token from POST incorrect.): /cuentas/login/
+[2026-07-11 21:44:37,867] WARNING Forbidden (CSRF token from POST incorrect.): /cuentas/login/

@@ -1,0 +1,37 @@
+{% extends 'reclamos/base_panel.html' %}
+
+{% block title %}Eliminar Usuario — Alexandra Farms{% endblock %}
+
+{% block sidebar_nav %}
+    <div class="nav-section">Gerencia</div>
+    <a href="{% url 'panel_gerencia' %}"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <a href="{% url 'lista_usuarios' %}" class="active"><i class="fas fa-users"></i> Usuarios</a>
+    <a href="{% url 'crear_usuario' %}"><i class="fas fa-user-plus"></i> Crear Usuario</a>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1><i class="fas fa-trash"></i> Eliminar Usuario</h1>
+    </div>
+
+    <div class="form-panel" style="border-left:5px solid #dc3545;background:#fff5f5;">
+        <h3 style="color:#dc3545;margin-bottom:15px;">
+            <i class="fas fa-exclamation-triangle"></i> ¿Está seguro?
+        </h3>
+        <p style="margin-bottom:20px;">
+            Está a punto de eliminar al usuario <strong>{{ usuario.get_full_name }}</strong> 
+            ({{ usuario.username }}). Esta acción <strong>no se puede deshacer</strong>.
+        </p>
+        <form method="POST">
+            {% csrf_token %}
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary" style="background:#dc3545;border-color:#dc3545;">
+                    <i class="fas fa-trash"></i> Sí, eliminar
+                </button>
+                <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
