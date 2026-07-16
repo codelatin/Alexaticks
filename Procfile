@@ -1,0 +1,1 @@
+web: gunicorn Alexaticks.wsgi --log-file -
