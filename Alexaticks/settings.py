@@ -8,7 +8,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==========================================
 SECRET_KEY = os.environ.get('SECRET_KEY', 'alexandra-farms-2026-!@#$xK9mP2qL8nR4vT6wY1uI3oE5aS7dF0gH')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = [
+    'AlexandraFarms.pythonanywhere.com',
+    '127.0.0.1',
+    'localhost'
+]
 
 # ==========================================
 # APLICACIONES
@@ -28,7 +32,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← NUEVO
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -148,9 +152,9 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 SECURE_REFERRER_POLICY = 'same-origin'
 
-# En producción Railway activa estas automáticamente
+# PythonAnywhere maneja SSL externamente
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SESSION_COOKIE_SECURE = True
